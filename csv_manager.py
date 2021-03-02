@@ -14,7 +14,7 @@ def read_input_file():
 
     return data_frame
 
-def filter_data():
+def filter_data(data):
     """Filter the input data
     """
     pass

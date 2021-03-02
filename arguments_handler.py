@@ -1,5 +1,4 @@
 import argparse
-import argcomplete
 
 import global_parameters
 import exceptions
@@ -81,7 +80,6 @@ def parse_command_line_arguments():
         required=False
     )
 
-    argcomplete.autocomplete(parser)
     args = parser.parse_args()
 
     arguments = vars(args)
