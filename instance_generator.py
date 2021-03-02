@@ -7,3 +7,4 @@ if __name__=="__main__":
     arguments_handler.parse_command_line_arguments()
 
     data = csv_manager.read_input_file()
+    data = csv_manager.filter_data(data)

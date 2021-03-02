@@ -12,19 +12,35 @@ def init():
     dict_keys = (
         "instance_name",
         "latitude_column_name",
-        "longitude_column_name"
+        "longitude_column_name",
+        "limits",
+        "min_lat",
+        "max_lat",
+        "min_lon",
+        "max_lon"
     )
 
+    # Name of the input instance
     _dict_parameters["instance_name"] = None
 
+    # Name of the latitude and longitude columns in the input file
     _dict_parameters["latitude_column_name"] = "lat"
-
     _dict_parameters["longitude_column_name"] = "lon"
+
+    # True if it was specified a box to limit the input map
+    _dict_parameters["limits"] = False
+    
+    # Different from None if it was specified the limitations for the map
+    _dict_parameters["min_latitude"] = None
+    _dict_parameters["max_latitude"] = None
+    _dict_parameters["min_longitude"] = None
+    _dict_parameters["max_longitude"] = None
+
 
 def set_parameter(parameter_name, value):
     """Change the value of a parameter
     """
-    print(parameter_name)
+
     if (parameter_name not in _dict_parameters.keys()):
         raise exceptions.GlobalParamNotFound()
     
@@ -48,6 +64,12 @@ def get_parameters():
 
 def get_global_parameters_names():
     """Return the parameter names in the following order
-    instance_name, latitude_column_name, longitude_column_name
+    instance_name, 
+    latitude_column_name, 
+    longitude_column_name, 
+    min_latitude,
+    max_latitude,
+    min_longitude,
+    max_longitude 
     """
     return dict_keys
