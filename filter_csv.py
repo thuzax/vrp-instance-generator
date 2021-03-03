@@ -6,7 +6,8 @@ import global_parameters
 import calculate_distances
 
 def filter_by_reaching(data, lat_column_name, lon_column_name, reaching_filter):
-
+    """Remove points that can't reach another random point
+    """
     if (not reaching_filter):
         return data
 
