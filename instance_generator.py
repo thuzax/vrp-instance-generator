@@ -22,8 +22,8 @@ if __name__=="__main__":
 
     parameters = global_parameters.get_global_parameters_names()
 
-    par_output_size = parameters[12]
-    par_output_name = parameters[13]
+    par_output_size = parameters[13]
+    par_output_name = parameters[14]
 
     output_size = global_parameters.get_parameter(par_output_size)
     output_name = global_parameters.get_parameter(par_output_name)

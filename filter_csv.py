@@ -1,6 +1,50 @@
 import pandas
+import random
+import time
 
 import global_parameters
+import calculate_distances
+
+def filter_by_reaching(data, lat_column_name, lon_column_name, reaching_filter):
+
+    if (not reaching_filter):
+        return data
+
+
+    removed_set = pandas.DataFrame(columns=data.columns)
+
+
+    for ind, row in data.iterrows():
+        random_ind = data.sample(n=1).index
+        while(ind == random_ind):
+            random_ind = data.sample(n=1).index
+
+        random_row = data.loc[random_ind].iloc[0]
+
+        point_x = (
+            float(row[lat_column_name]), 
+            float(row[lon_column_name])
+        )
+
+        point_y = (
+            float(random_row[lat_column_name]), 
+            float(random_row[lon_column_name])
+        )
+
+        reaching_data = calculate_distances.request_osrm_dist(point_x, point_y)
+        # time.sleep(random.randint(0, 1))
+
+        if (reaching_data["code"].upper() != "OK"):
+            removed_set = removed_set.append(row)
+
+    print(data)
+    print(removed_set)
+
+    data = data.drop(removed_set.index)
+
+    print(data)
+
+    return data
 
 def filter_lat_limits(data, min_lat, max_lat, lat_column_name):
     """Remove points out of the latitude limits, if limits are given
@@ -143,6 +187,7 @@ def filter_data(data):
     par_block_point_repetition = parameter_names[9]
     par_block_no_number = parameter_names[10]
     par_block_no_street = parameter_names[11]
+    par_reaching_filter = parameter_names[12]
 
 
     ### get values that will be used with their keys
@@ -164,6 +209,7 @@ def filter_data(data):
 
     block_no_number = global_parameters.get_parameter(par_block_no_number)
     block_no_street = global_parameters.get_parameter(par_block_no_street)
+    reaching_filter = global_parameters.get_parameter(par_reaching_filter)
     
     ### filter data
     data = filter_by_lat_and_lon(
@@ -188,5 +234,7 @@ def filter_data(data):
             street_column_name, 
             block_no_street
         )
+
+    filter_by_reaching(data, lat_column_name, lon_column_name, reaching_filter)
 
     return data

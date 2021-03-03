@@ -147,6 +147,15 @@ def parse_command_line_arguments():
         required=False
     )
 
+    parser.add_argument(
+        "--use-reaching-filter",
+        dest="reaching_filter",
+        help="remove all points that can't reach another random point",
+        action="store_true",
+        default=False,
+        required=False
+    )
+
     args = parser.parse_args()
 
 

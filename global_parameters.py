@@ -22,6 +22,7 @@ def init():
         "block_point_repetition",
         "block_no_number",
         "block_no_street",
+        "reaching_filter",
         "output_size",
         "output_name"
     )
@@ -66,6 +67,8 @@ def init():
     _dict_parameters["block_no_number"] = False
     # If true, prevents addresses without street names
     _dict_parameters["block_no_street"] = False
+    # If true, remove a point that can't reach another random point
+    _dict_parameters["reaching_filter"] = False
 
 
 def set_parameter(parameter_name, value):
@@ -101,6 +104,7 @@ def get_parameters():
 
 def get_global_parameters_names():
     """Return the parameter names as foollows (format: "<index>. <param_name>")
+    
     0. instance_name,
     1. lat_column_name,
     2. lon_column_name,
@@ -113,7 +117,8 @@ def get_global_parameters_names():
     9. block_point_repetition,
     10. block_no_number,
     11. block_no_street,
-    12. output_size,
-    13. output_name
+    12. reaching_filter
+    13. output_size,
+    14. output_name,
     """
     return dict_keys
