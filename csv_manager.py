@@ -3,6 +3,7 @@ import random
 
 import global_parameters
 
+
 def read_input_file():
     """Read a CSV input file
     """
@@ -14,10 +15,9 @@ def read_input_file():
 
     return data_frame
 
-def filter_data(data):
-    """Filter the input data
-    """
-    pass
+def write_output_file(data, output_name):
+    data.to_csv(output_name, index=False)
+    
 
 
 

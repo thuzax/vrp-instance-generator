@@ -1,28 +1,17 @@
 
 class GlobalParamNotFound(Exception):
-    def __init__(self):
+    def __init__(self, parameter):
         message = ""
-        message += "Global Parameter does not exists"
+        message += "Global Parameter " + parameter + " does not exists"
         super().__init__(message)
 
-class ParamLimitNotSpecified(Exception):
-    def __init__(self):
+class ParamUsedButNoParamRequired(Exception):
+    def __init__(self, parameter_used, parameter_needed):
         message = ""
-        message += "The --limits parameter was specified,"
-        message += "but no limiting parameter "
-        message += "(-min-lat, -max-lat, -min-lon, -max-lon)"
-        message += "was provided"
+        message += "Parameter " + parameter_used + " was specified, "
+        message += "but the needed parameter " + parameter_needed + " "
+        message += "was not provided"
         
-        super().__init__(message)
-
-
-class ParamLimitSpecifiedWithoutParamLimits(Exception):
-    def __init__(self):
-        message = ""
-        message += "A limiting parameter "
-        message += "(-min-lat, -max-lat, -min-lon, -max-lon) "
-        message += "was provided, but the parameter "
-        message += "--limits was not specified"
         super().__init__(message)
 
         
