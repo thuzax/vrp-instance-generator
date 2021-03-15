@@ -39,15 +39,13 @@ def filter_by_reaching(data, lat_column_name, lon_column_name, reaching_filter):
             float(random_row[lon_column_name])
         )
 
-        distance, time = calculate_distances.request_osrm_dist_and_time(
+        distance, time = calculate_distances.request_dist_and_time(
                                                     point_x, 
                                                     point_y
                                                 )
-        # time.sleep(random.randint(0, 1))
 
         if ((distance is None) or (data is None)):
             removed_set = removed_set.append(row)
-        # print(distance, time)
 
         bar.next()
 
