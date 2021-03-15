@@ -19,7 +19,7 @@ if __name__=="__main__":
     data = csv_manager.read_input_file()
     
     # filter data
-    # data = filter_csv.filter_data(data)
+    data = filter_csv.filter_data(data)
 
     parameters = global_parameters.get_global_parameters_names()
 
@@ -30,10 +30,10 @@ if __name__=="__main__":
     output_name = global_parameters.get_parameter(par_output_name)
 
     # choose the random address/points
-    # data = generation_manager.draw_elements(data, output_size)
+    data = generation_manager.draw_elements(data, output_size)
 
     # write data in csv file
-    # csv_manager.write_output_file(data, output_name)
+    csv_manager.write_output_file(data, output_name)
 
     distance_matrix, time_matrix = generation_manager.calculate_matrices(data)
     print(distance_matrix)

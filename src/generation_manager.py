@@ -25,7 +25,6 @@ def calculate_matrices(data):
     """Return two NxN matrices representing (respectively) the time and distance matrix.
     """
 
-
     distance_matrix = []
     time_matrix = []
 
@@ -47,7 +46,7 @@ def calculate_matrices(data):
         points_list.append(point)
 
     execution_log.info_log("Calculating matrices...")
-    bar = Bar("", max=len(data),suffix='%(percent)d%%')
+    bar = Bar("Calculating:", max=len(data),suffix='%(percent)d%%')
 
     for i in range(len(points_list)):
         results = calculate_distances.request_dist_and_time_from_source(
