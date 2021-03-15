@@ -2,8 +2,11 @@ import pandas
 import random
 import time
 
-import global_parameters
-import calculate_distances
+from progress.bar import Bar
+
+from src import global_parameters
+from src import execution_log
+from src import calculate_distances_osrm as calculate_distances
 
 def filter_by_reaching(data, lat_column_name, lon_column_name, reaching_filter):
     """Remove points that can't reach another random point
@@ -12,10 +15,14 @@ def filter_by_reaching(data, lat_column_name, lon_column_name, reaching_filter):
         return data
 
 
+    execution_log.info_log("Filtering by reachability...")
+
     removed_set = pandas.DataFrame(columns=data.columns)
 
+    bar = Bar("Applying filter:", max=len(data),suffix='%(percent)d%%')
 
     for ind, row in data.iterrows():
+
         random_ind = data.sample(n=1).index
         while(ind == random_ind):
             random_ind = data.sample(n=1).index
@@ -32,18 +39,22 @@ def filter_by_reaching(data, lat_column_name, lon_column_name, reaching_filter):
             float(random_row[lon_column_name])
         )
 
-        reaching_data = calculate_distances.request_osrm_dist(point_x, point_y)
+        distance, time = calculate_distances.request_osrm_dist_and_time(
+                                                    point_x, 
+                                                    point_y
+                                                )
         # time.sleep(random.randint(0, 1))
 
-        if (reaching_data["code"].upper() != "OK"):
+        if ((distance is None) or (data is None)):
             removed_set = removed_set.append(row)
+        # print(distance, time)
 
-    print(data)
-    print(removed_set)
+        bar.next()
 
+    bar.finish()
     data = data.drop(removed_set.index)
 
-    print(data)
+    execution_log.info_log("Done.")
 
     return data
 
@@ -53,15 +64,22 @@ def filter_lat_limits(data, min_lat, max_lat, lat_column_name):
 
     if ((min_lat is None) and (max_lat is None)):
         return data
-    
+
     if (max_lat is None):
+        execution_log.info_log("Filtering by min latitude...")
         data = data.drop(data[data[lat_column_name] < min_lat].index)
+        execution_log.info_log("Done.")
+        
         return data
 
     if (min_lat is None):
+        execution_log.info_log("Filtering by max latitude...")
         data = data.drop(data[data[lat_column_name] > max_lat].index)
+        execution_log.info_log("Done.")
+
         return data
 
+    execution_log.info_log("Filtering by min and max latitude...")
     data = data.drop(
         data[
             (data[lat_column_name] < min_lat) 
@@ -69,7 +87,8 @@ def filter_lat_limits(data, min_lat, max_lat, lat_column_name):
             (data[lat_column_name] > max_lat)
         ].index
     )
-    
+    execution_log.info_log("Done.")
+
     return data
 
 
@@ -81,13 +100,18 @@ def filter_lon_limits(data, min_lon, max_lon, lon_column_name):
         return data
 
     if (max_lon is None):
+        execution_log.info_log("Filtering by min longitude...")
         data = data.drop(data[data[lon_column_name] < min_lon].index)
+        execution_log.info_log("Done.")
         return data
 
     if (min_lon is None):
+        execution_log.info_log("Filtering by max longitude...")
         data = data.drop(data[data[lon_column_name] > max_lon].index)
+        execution_log.info_log("Done.")
         return data
 
+    execution_log.info_log("Filtering by min and max longitude...")
     data = data.drop(
         data[
             (data[lon_column_name] < min_lon) 
@@ -95,7 +119,8 @@ def filter_lon_limits(data, min_lon, max_lon, lon_column_name):
             (data[lon_column_name] > max_lon)
         ].index
     )
-    
+    execution_log.info_log("Done.")
+
     return data
 
 
@@ -113,8 +138,10 @@ def filter_by_lat_and_lon(
     Remove points based on latitude and longitude
     """
 
+    execution_log.info_log("Removing lines without latitude or longitude...")
     # Remove rows with latidude or longitude with None values
     data = data.dropna(subset=[lat_column_name, lon_column_name])
+    execution_log.info_log("Done.")
 
 
     # Remove reapeated points if --block-point-repetition flag was specified
@@ -141,10 +168,12 @@ def filter_by_number(
     """
     Remove points nased on the address number
     """
-    
+
     # Remove rows without number
     if (block_no_number):
+        execution_log.info_log("Removing lines without number...")
         data = data.dropna(subset=[number_column_name])
+        execution_log.info_log("Done.")
 
     return data
 
@@ -160,7 +189,9 @@ def filter_by_street(
     
     # Remove rows without number
     if (block_no_street):
+        execution_log.info_log("Removing lines without street...")
         data = data.dropna(subset=[street_column_name])
+        execution_log.info_log("Done.")
 
     return data
 
@@ -169,6 +200,9 @@ def filter_by_street(
 def filter_data(data):
     """Filter the input data
     """
+
+    execution_log.info_log("Filtering data.")
+
 
     parameter_names = global_parameters.get_global_parameters_names()
     
@@ -237,5 +271,7 @@ def filter_data(data):
         )
 
     filter_by_reaching(data, lat_column_name, lon_column_name, reaching_filter)
+
+    execution_log.info_log("Data filtered.")
 
     return data

@@ -1,7 +1,7 @@
 import argparse
 
-import global_parameters
-import exceptions
+from src import global_parameters
+from src import exceptions
 
 def parse_command_line_arguments():
     """Manage the command line arguments
@@ -123,7 +123,7 @@ def parse_command_line_arguments():
     parser.add_argument(
         "--block-point-repetition",
         dest="block_point_repetition",
-        help="forbid two or more entries for the same point. If there are repetition, maintain the first found entrie",
+        help="forbid two or more entries for the same point. If there are repetition, maintain the first found entry",
         action="store_true",
         default=False,
         required=False
@@ -153,6 +153,15 @@ def parse_command_line_arguments():
         help="remove all points that can't reach another random point",
         action="store_true",
         default=False,
+        required=False
+    )
+
+    parser.add_argument(
+        "--run-distances-remote",
+        dest="distances_locally",
+        help="if set, the distances between points will be calculated by the OSRM demo server (not recomended for big instances)",
+        action="store_false",
+        default=True,
         required=False
     )
 

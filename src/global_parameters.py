@@ -1,5 +1,6 @@
-import exceptions
 import copy
+
+from src import exceptions
 
 def init():
     """
@@ -24,7 +25,8 @@ def init():
         "block_no_street",
         "reaching_filter",
         "output_size",
-        "output_name"
+        "output_name",
+        "distances_locally"
     )
 
     global _int_parameters
@@ -69,6 +71,10 @@ def init():
     _dict_parameters["block_no_street"] = False
     # If true, remove a point that can't reach another random point
     _dict_parameters["reaching_filter"] = False
+
+    # If true, calculate distance running OSRM locally
+    _dict_parameters["distances_locally"] = True
+
 
 
 def set_parameter(parameter_name, value):
@@ -120,5 +126,6 @@ def get_global_parameters_names():
     12. reaching_filter
     13. output_size,
     14. output_name,
+    15. distances_locally
     """
     return dict_keys
