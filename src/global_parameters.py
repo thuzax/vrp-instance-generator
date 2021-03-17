@@ -26,7 +26,8 @@ def init():
         "reaching_filter",
         "output_size",
         "output_name",
-        "distances_locally"
+        "distances_locally",
+        "set_config_file"
     )
 
     global _int_parameters
@@ -74,6 +75,9 @@ def init():
 
     # If true, calculate distance running OSRM locally
     _dict_parameters["distances_locally"] = True
+
+    # Parameter configuration file
+    _dict_parameters["set_config_file"] = None
 
 
 
@@ -127,5 +131,6 @@ def get_global_parameters_names():
     13. output_size,
     14. output_name,
     15. distances_locally
+    16. set_config_file
     """
     return dict_keys

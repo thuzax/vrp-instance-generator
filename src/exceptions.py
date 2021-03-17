@@ -25,10 +25,11 @@ class DistanceToPointCannotBeCalculated(Exception):
         super().__init__(message)
 
 class CouldNotReachTheRoutingServer(Exception):
-    def __init__(self, status_code):
+    def __init__(self, request_url, status_code):
         message = ""
         message += "Could not connect to routing server. "
-        message += "HTTP request code error: " + str(status_code)
+        message += "URL: " + request_url + " . "
+        message += "HTTP request code error: " + str(status_code) + "."
 
         super().__init__(message)
 

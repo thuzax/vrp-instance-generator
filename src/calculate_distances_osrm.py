@@ -20,7 +20,10 @@ def request_dist_and_time_remote(x, y):
     response = requests.get(url)
 
     if (response.status_code != 200):
-        raise exceptions.CouldNotReachTheRoutingServer(response.status_code)
+        raise exceptions.CouldNotReachTheRoutingServer(
+                                url, 
+                                response.status_code
+                            )
 
     data = json.loads(response.content)
     
@@ -40,7 +43,11 @@ def request_dist_and_time_local(x, y):
     response = requests.get(url)
 
     if (response.status_code != 200):
-        raise exceptions.CouldNotReachTheRoutingServer(response.status_code)
+        print(x, y)
+        raise exceptions.CouldNotReachTheRoutingServer(
+                                url, 
+                                response.status_code
+                            )
 
     data = json.loads(response.content)
     
@@ -86,8 +93,11 @@ def request_dist_and_time_from_source_local(source_position, points):
     response = requests.get(url)
 
     if (response.status_code != 200):
-        raise exceptions.CouldNotReachTheRoutingServer(response.status_code)
-
+        raise exceptions.CouldNotReachTheRoutingServer(
+                                url, 
+                                response.status_code
+                            )
+                            
 
     data = json.loads(response.content)
 
@@ -131,7 +141,10 @@ def request_dist_and_time_from_source_remote(source_position, points):
     response = requests.get(url)
 
     if (response.status_code != 200):
-        raise exceptions.CouldNotReachTheRoutingServer(response.status_code)
+        raise exceptions.CouldNotReachTheRoutingServer(
+                                url, 
+                                response.status_code
+                            )
 
     print(response)
     data = json.loads(response.content)

@@ -1,4 +1,5 @@
 import numpy
+import random
 from progress.bar import Bar
 
 
@@ -21,43 +22,43 @@ def draw_elements(data, output_size):
 
 
 
-def calculate_matrices(data):
+def calculate_matrices(points):
     """Return two NxN matrices representing (respectively) the time and distance matrix.
     """
 
     distance_matrix = []
     time_matrix = []
 
-    parameters = global_parameters.get_global_parameters_names()
-    lat_column_name = global_parameters.get_parameter(parameters[1])
-    lon_column_name = global_parameters.get_parameter(parameters[2])
+    # parameters = global_parameters.get_global_parameters_names()
+    # lat_column_name = global_parameters.get_parameter(parameters[1])
+    # lon_column_name = global_parameters.get_parameter(parameters[2])
 
-    points_list = []
+    # points_list = []
 
-    for ind, row in data.iterrows():
-        latitude = row[lat_column_name]
-        longitude = row[lon_column_name]
+    # for ind, row in data.iterrows():
+    #     latitude = row[lat_column_name]
+    #     longitude = row[lon_column_name]
 
-        point = (
-            float(latitude), 
-            float(longitude)
-        )
+    #     point = (
+    #         float(latitude), 
+    #         float(longitude)
+    #     )
 
-        points_list.append(point)
+    #     points_list.append(point)
 
     execution_log.info_log("Calculating matrices...")
-    bar = Bar("Calculating:", max=len(data),suffix='%(percent)d%%')
+    bar = Bar("Calculating:", max=len(points),suffix='%(percent)d%%')
 
-    for i in range(len(points_list)):
+    for i in range(len(points)):
         results = calculate_distances.request_dist_and_time_from_source(
                                             i, 
-                                            points_list
+                                            points
                                         )
 
         distances, times = results
 
         if (distances is None or times is None):
-            raise exceptions.DistanceToPointCannotBeCalculated(points_list[i])
+            raise exceptions.DistanceToPointCannotBeCalculated(points[i])
 
         distance_matrix.append(distances)
         time_matrix.append(times)
@@ -69,3 +70,31 @@ def calculate_matrices(data):
     execution_log.info_log("Done.")
 
     return (distance_matrix, time_matrix)
+
+def generate_cvrp_capacity():
+    execution_log.info_log("Generating CVRP capacity...")
+
+    capacity = random.randint(1,20) * 10
+
+    execution_log.info_log("Done.")
+    return capacity
+
+def generate_cvrp_demands(number_of_clientes):
+    execution_log.info_log("Generating CVRP demands...")
+
+    probabilities = [1, 0.5, 0.3, 0.2]
+
+    demands = []
+
+    for i in range(number_of_clientes):
+        demands.append(0)
+        for probability in probabilities:
+            p = random.randint(0,1000)/1000.0
+            if (p <= probability):
+                demands[i] += 1
+
+    execution_log.info_log("Done.")
+    
+    
+    return demands
+

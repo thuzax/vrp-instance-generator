@@ -152,5 +152,6 @@ dmypy.json
 
 ### personal ###
 *.csv
+*.vrp
 
 # End of https://www.toptal.com/developers/gitignore/api/vscode,python

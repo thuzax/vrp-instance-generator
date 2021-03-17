@@ -1,6 +1,5 @@
 import pandas
-import random
-import time
+
 
 from progress.bar import Bar
 
@@ -137,8 +136,34 @@ def filter_by_lat_and_lon(
     """
 
     execution_log.info_log("Removing lines without latitude or longitude...")
+    
     # Remove rows with latidude or longitude with None values
     data = data.dropna(subset=[lat_column_name, lon_column_name])
+    
+    execution_log.info_log("Done.")
+
+    execution_log.info_log(
+                        "Removing lines with invalid latitude or longitude..."
+                    )
+    
+    # Remove rows with invalid latitude
+    data = data.drop(
+        data[
+            (data[lat_column_name] < -90) 
+            | 
+            (data[lat_column_name] > 90)
+        ].index
+    )
+
+    # Remove rows with invalid longitude
+    data = data.drop(
+        data[
+            (data[lon_column_name] < -180) 
+            | 
+            (data[lon_column_name] > 180)
+        ].index
+    )
+
     execution_log.info_log("Done.")
 
 
