@@ -193,7 +193,9 @@ To use this feature it is needed the use of the argument `--use-street-name`. If
 ### Filter by reachability
     --use-reaching-filter
 
-Remove points which are probably unreachable. For each element from the input it is selected another element and a route is calculated. If the route cannot be found, then the element is removed. It is possible that the second element is the one unreachable, but it is not worth to calculate many routes, since the input instance is intended to be too large. Also, note that the random element will be excluded once the algorithm try to calculate its route to another random element. The default value for this argument is `False` and it is stored with the variable `REACHING_FILTER`.
+Remove points which are probably unreachable. For each element from the input it is selected another element and a route is calculated. If the route cannot be found, then the element is removed. It is possible that the second element is the one unreachable, but it is not worth to calculate many routes, since the input instance is intended to be too large.
+
+Note that the random element will be excluded once the algorithm try to calculate its route to another random element. The default value for this argument is `False` and it is stored with the variable `REACHING_FILTER`.
 
 
 ### Run the Matrices Calculations Remotelly
