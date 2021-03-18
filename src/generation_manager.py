@@ -4,14 +4,16 @@ from progress.bar import Bar
 
 
 from src import global_parameters
-from src import calculate_distances_osrm as calculate_distances
 from src import exceptions
 from src import execution_log
+from src import calculate_distances_osrm as calculate_distances
 
 
-def draw_elements(data, output_size):
+def draw_instance_elements(data):
     """Select <output_size> random elements from the filtered input instance providaded
     """
+
+    output_size = global_parameters.output_size()
 
     if (len(data) < output_size):
         return data
@@ -28,23 +30,6 @@ def calculate_matrices(points):
 
     distance_matrix = []
     time_matrix = []
-
-    # parameters = global_parameters.get_global_parameters_names()
-    # lat_column_name = global_parameters.get_parameter(parameters[1])
-    # lon_column_name = global_parameters.get_parameter(parameters[2])
-
-    # points_list = []
-
-    # for ind, row in data.iterrows():
-    #     latitude = row[lat_column_name]
-    #     longitude = row[lon_column_name]
-
-    #     point = (
-    #         float(latitude), 
-    #         float(longitude)
-    #     )
-
-    #     points_list.append(point)
 
     execution_log.info_log("Calculating matrices...")
     bar = Bar("Calculating:", max=len(points),suffix='%(percent)d%%')

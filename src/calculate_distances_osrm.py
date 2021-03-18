@@ -60,9 +60,7 @@ def request_dist_and_time_local(x, y):
 def request_dist_and_time(x, y):
     """Make a /route request to OSRM server and return distance and time between two points. The request will be remote if --run-distances-remote parameter is set, and locally otherwise.
     """
-    parameters_names = global_parameters.get_global_parameters_names()
-    par_local = parameters_names[15]
-    calcuate_distance_local = global_parameters.get_parameter(par_local)
+    calcuate_distance_local = global_parameters.distances_locally()
 
     if (calcuate_distance_local):
         return request_dist_and_time_local(x, y)
@@ -171,9 +169,7 @@ def request_dist_and_time_from_source_remote(source_position, points):
 def request_dist_and_time_from_source(source_position, points):
     """Make a /table request to OSRM server and return distance and time between from a source to a list of points. The request will be remote if --run-distances-remote parameter is set, and locally otherwise.
     """
-    parameters_names = global_parameters.get_global_parameters_names()
-    par_local = parameters_names[15]
-    calcuate_distance_local = global_parameters.get_parameter(par_local)
+    calcuate_distance_local = global_parameters.distances_locally()
 
     if (calcuate_distance_local):
         return request_dist_and_time_from_source_local(source_position, points)

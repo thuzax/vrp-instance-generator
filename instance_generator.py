@@ -18,18 +18,14 @@ if __name__=="__main__":
     # filter data
     data = filter_csv.filter_data(data)
 
-    parameters = global_parameters.get_global_parameters_names()
-
-    par_output_size = parameters[13]
-    par_output_name = parameters[14]
-
-    output_size = global_parameters.get_parameter(par_output_size)
-    output_name = global_parameters.get_parameter(par_output_name)
 
     # choose the random address/points
-    data = generation_manager.draw_elements(data, output_size)
+    data = generation_manager.draw_instance_elements(data)
 
     points = csv_manager.get_points_coordinates(data)
+    
+    output_name = global_parameters.output_name()
+    output_size = global_parameters.output_size()
 
     # write data in csv file
     csv_manager.write_output_file(data, output_name)

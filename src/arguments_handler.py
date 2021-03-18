@@ -8,12 +8,8 @@ from src import exceptions
 def read_configuration_file():
     """Read the configuration file and reset the parameters values described in the file
     """
-
-    par_configuration_file = global_parameters.get_global_parameters_names()[16]
     
-    configuration_file_name = global_parameters.get_parameter(
-                                                    par_configuration_file
-                                                )
+    configuration_file_name = global_parameters.config_file()
 
 
     if (configuration_file_name == None):
@@ -24,6 +20,9 @@ def read_configuration_file():
         dict_config = json.loads(text)
 
         for key, value in dict_config.items():
+            if (key == "config_file"):
+                continue
+            
             key = key.lower()
             global_parameters.set_parameter(key, value)
 
@@ -192,7 +191,7 @@ def parse_command_line_arguments():
 
     parser.add_argument(
         "--set-config-file",
-        dest="set_config_file",
+        dest="config_file",
         help="parameter configuration json file to be used. The file will have priority over the command line arguments if there conflicts in parameters",
         action="store",
         default=None,

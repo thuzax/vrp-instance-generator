@@ -11,11 +11,9 @@ def read_input_file():
     execution_log.info_log("Reading CSV input file...")
 
 
-    par_input_instance = global_parameters.get_global_parameters_names()[0]
+    instance_name = global_parameters.instance_name()
 
-    dict_globals = global_parameters.get_parameters()
-
-    data_frame = pandas.read_csv(dict_globals[par_input_instance])
+    data_frame = pandas.read_csv(instance_name)
 
     execution_log.info_log("File read.")
 
@@ -37,9 +35,9 @@ def write_output_file(data, output_name):
 def get_points_coordinates(data):
     """Get the latitude and longitude of all rows
     """
-    parameters = global_parameters.get_global_parameters_names()
-    lat_column_name = global_parameters.get_parameter(parameters[1])
-    lon_column_name = global_parameters.get_parameter(parameters[2])
+    
+    lat_column_name = global_parameters.lat_column_name()
+    lon_column_name = global_parameters.lon_column_name()
 
     points_list = []
 

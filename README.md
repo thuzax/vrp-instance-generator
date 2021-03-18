@@ -16,7 +16,7 @@ $ pip install -r requirements.txt
 
 ## Running locally
 
-To calculate the route between two locations we recommend the Open [Source Routing Machine (OSRM)](https://github.com/Project-OSRM/). For faster calculations we suggest running it locally.
+To calculate the route between two locations we use the [Open Source Routing Machine (OSRM)](https://github.com/Project-OSRM/). For faster calculations we suggest running it locally.
 
 To do so, it is needed to install and configure [osrm-backend](https://github.com/Project-OSRM/osrm-backend). In this guide we summarize one of the osrm-backend installing options for Ubuntu (present in the original project quickstart guide).
 
@@ -30,7 +30,7 @@ $ git clone https://github.com/Project-OSRM/osrm-backend.git
 
 The following instructions are from [osrm-backend/building-from-source](https://github.com/Project-OSRM/osrm-backend#building-from-source). Make sure to run the commands in OSRM directory.
 
-* Install osrm dependencies:
+* Install OSRM dependencies:
 
     ```
     $ sudo apt install build-essential git cmake pkg-config libbz2-dev libxml2-dev libzip-dev libboost-all-dev lua5.2 liblua5.2-dev libtbb-dev
@@ -204,7 +204,7 @@ Note that the random element will be excluded once the algorithm try to calculat
 The distance and time matrices can be calculated remotelly (using [OSRM demo server](map.project-osrm.org/)) or locally. If this argument is set, the demo server will be used, otherwise the algorithm will requests distance from the `localhost` port `5000` (default port for OSRM backend). The value for this argument is stored with the variable `DISTANCES_LOCALLY` and its default is `True`.
 
 ### Using Configuration File
-    --set-config-file SET_CONFIG_FILE
+    --set-config-file CONFIG_FILE
 
 All the optionals arguments (excepting this one) can be setted in a configuration file. This argument asks for a `json` file containing values for the desired optional arguments. The file will have priority over the command line, but will not exclude it. For example, if `--min-lat` is set on the configuration file and in the command line, the value set in the file will be used. But if the `--min-lat` is set only in the second, the command line argument will be used. This is analogous for the configuration file. 
 
