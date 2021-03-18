@@ -1,4 +1,5 @@
 import pandas
+import logging
 
 from src import global_parameters
 from src import execution_log
@@ -14,6 +15,13 @@ def read_input_file():
     instance_name = global_parameters.instance_name()
 
     data_frame = pandas.read_csv(instance_name)
+
+    if (global_parameters.output_size() > len(data_frame)):
+        execution_log.info_log(
+            "Changed output size. Instance is smaller than the provided size."
+        )
+        global_parameters.set_parameter("output_size", len(data_frame))
+
 
     execution_log.info_log("File read.")
 

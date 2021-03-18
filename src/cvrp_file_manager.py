@@ -5,15 +5,17 @@ def make_file_text(name,size, capacity, points, demands):
     """
 
     text = ""
-    text += "NAME \t:\t " + name
+    text += "NAME\t:\t" + name
     text += "\n"
-    text += "COMMENT \t:\t " + ""
+    text += "COMMENT\t:\t" + "\"\""
     text += "\n"
-    text += "DIMENSION \t:\t " + str(size)
+    text += "TYPE\t:\t" + "CVRP"
     text += "\n"
-    text += "EDGE_WEIGHT_TYPE \t:\t " + "EXPLICIT"
+    text += "DIMENSION\t:\t" + str(size)
     text += "\n"
-    text += "CAPACITY \t:\t " + str(capacity)
+    text += "EDGE_WEIGHT_TYPE\t:\t" + "EUC_2D"
+    text += "\n"
+    text += "CAPACITY\t:\t" + str(capacity)
     text += "\n"
     text += "NODE_COORD_SECTION"
     text += "\n"
@@ -25,9 +27,20 @@ def make_file_text(name,size, capacity, points, demands):
     text += "DEMAND_SECTION"
     text += "\n"
 
-    for i in range(size):
-        text += str(i+1) + "\t" + str(demands[i])
+    text += str(1) + "\t" + str(0) + "\n"
+
+    for i in range(size-1):
+        text += str(i+2) + "\t" + str(demands[i])
         text += "\n"
+
+    text += "DEPOT_SECTION"
+    text += "\n"
+    text += str(1)
+    text += "\n"
+    text += str(-1)
+    text += "\n"
+    text += "EOF"
+    text += "\n"
 
     return text
 
