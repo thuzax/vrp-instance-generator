@@ -1,0 +1,15 @@
+{
+    "LAT_COLUMN_NAME" : "lat",
+    "LON_COLUMN_NAME" : "lon",
+    "NUMBER_COLUMN_NAME" : "number",
+    "STREET_COLUMN_NAME" : "street name",
+    "MIN_LAT" : null,
+    "MAX_LAT" : null,
+    "MIN_LON" : null,
+    "MAX_LON" : null,
+    "BLOCK_POINT_REPETITION" : false,
+    "BLOCK_NO_NUMBER" : false,
+    "BLOCK_NO_STREET" : false,
+    "REACHING_FILTER" : true,
+    "DISTANCES_LOCALLY" : true
+}

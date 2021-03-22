@@ -26,7 +26,8 @@ def init():
         "reaching_filter",
         "output_size",
         "output_name",
-        "distances_locally"
+        "distances_locally",
+        "config_file"
     )
 
     global _int_parameters
@@ -75,6 +76,9 @@ def init():
     # If true, calculate distance running OSRM locally
     _dict_parameters["distances_locally"] = True
 
+    # Parameter configuration file
+    _dict_parameters["config_file"] = None
+
 
 
 def set_parameter(parameter_name, value):
@@ -101,31 +105,39 @@ def get_parameter(parameter_name):
     
     return _dict_parameters[parameter_name]
 
-def get_parameters():
-    """Get a dictionary with copies of all the parameters 
-    """
-    return copy.deepcopy(_dict_parameters)
 
-
-
-def get_global_parameters_names():
-    """Return the parameter names as foollows (format: "<index>. <param_name>")
-    
-    0. instance_name,
-    1. lat_column_name,
-    2. lon_column_name,
-    3. number_column_name,
-    4. street_column_name,
-    5. min_lat,
-    6. max_lat,
-    7. min_lon,
-    8. max_lon,
-    9. block_point_repetition,
-    10. block_no_number,
-    11. block_no_street,
-    12. reaching_filter
-    13. output_size,
-    14. output_name,
-    15. distances_locally
-    """
-    return dict_keys
+# Gets
+def instance_name():
+    return get_parameter("instance_name")
+def lat_column_name():
+    return get_parameter("lat_column_name")
+def lon_column_name():
+    return get_parameter("lon_column_name")
+def number_column_name():
+    return get_parameter("number_column_name")
+def street_column_name():
+    return get_parameter("street_column_name")
+def min_lat():
+    return get_parameter("min_lat")
+def max_lat():
+    return get_parameter("max_lat")
+def min_lon():
+    return get_parameter("min_lon")
+def max_lon():
+    return get_parameter("max_lon")
+def block_point_repetition():
+    return get_parameter("block_point_repetition")
+def block_no_number():
+    return get_parameter("block_no_number")
+def block_no_street():
+    return get_parameter("block_no_street")
+def reaching_filter():
+    return get_parameter("reaching_filter")
+def output_size():
+    return get_parameter("output_size")
+def output_name():
+    return get_parameter("output_name")
+def distances_locally():
+    return get_parameter("distances_locally")
+def config_file():
+    return get_parameter("config_file")

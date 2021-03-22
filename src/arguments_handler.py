@@ -1,8 +1,32 @@
 import argparse
+import json
 
 from src import global_parameters
 from src import exceptions
 
+
+def read_configuration_file():
+    """Read the configuration file and reset the parameters values described in the file
+    """
+    
+    configuration_file_name = global_parameters.config_file()
+
+
+    if (configuration_file_name == None):
+        return
+
+    with open(configuration_file_name, "r") as config_file:
+        text = config_file.read()
+        dict_config = json.loads(text)
+
+        for key, value in dict_config.items():
+            if (key == "config_file"):
+                continue
+            
+            key = key.lower()
+            global_parameters.set_parameter(key, value)
+
+    
 def parse_command_line_arguments():
     """Manage the command line arguments
     """
@@ -165,6 +189,15 @@ def parse_command_line_arguments():
         required=False
     )
 
+    parser.add_argument(
+        "--set-config-file",
+        dest="config_file",
+        help="parameter configuration json file to be used. The file will have priority over the command line arguments if there conflicts in parameters",
+        action="store",
+        default=None,
+        required=False
+    )
+
     args = parser.parse_args()
 
 
@@ -224,4 +257,3 @@ def parse_command_line_arguments():
 
     for key, value in arguments.items():
         global_parameters.set_parameter(key, value)
-

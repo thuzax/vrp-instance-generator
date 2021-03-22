@@ -14,4 +14,22 @@ class ParamUsedButNoParamRequired(Exception):
         
         super().__init__(message)
 
+class DistanceToPointCannotBeCalculated(Exception):
+    def __init__(self, point):
+        message = ""
+        message += "The distances to the point " + str(point)
+        message += "could not be calculated with OSRM. "
+        message += "Please verify if the server is working properly"
+        message += "and if there is valid routes to the point."
         
+        super().__init__(message)
+
+class CouldNotReachTheRoutingServer(Exception):
+    def __init__(self, request_url, status_code):
+        message = ""
+        message += "Could not connect to routing server. "
+        message += "URL: " + request_url + " . "
+        message += "HTTP request code error: " + str(status_code) + "."
+
+        super().__init__(message)
+

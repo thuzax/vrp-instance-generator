@@ -1,6 +1,5 @@
 import pandas
-import random
-import time
+
 
 from progress.bar import Bar
 
@@ -39,15 +38,13 @@ def filter_by_reaching(data, lat_column_name, lon_column_name, reaching_filter):
             float(random_row[lon_column_name])
         )
 
-        distance, time = calculate_distances.request_osrm_dist_and_time(
+        distance, time = calculate_distances.request_dist_and_time(
                                                     point_x, 
                                                     point_y
                                                 )
-        # time.sleep(random.randint(0, 1))
 
         if ((distance is None) or (data is None)):
             removed_set = removed_set.append(row)
-        # print(distance, time)
 
         bar.next()
 
@@ -139,8 +136,34 @@ def filter_by_lat_and_lon(
     """
 
     execution_log.info_log("Removing lines without latitude or longitude...")
+    
     # Remove rows with latidude or longitude with None values
     data = data.dropna(subset=[lat_column_name, lon_column_name])
+    
+    execution_log.info_log("Done.")
+
+    execution_log.info_log(
+                        "Removing lines with invalid latitude or longitude..."
+                    )
+    
+    # Remove rows with invalid latitude
+    data = data.drop(
+        data[
+            (data[lat_column_name] < -90) 
+            | 
+            (data[lat_column_name] > 90)
+        ].index
+    )
+
+    # Remove rows with invalid longitude
+    data = data.drop(
+        data[
+            (data[lon_column_name] < -180) 
+            | 
+            (data[lon_column_name] > 180)
+        ].index
+    )
+
     execution_log.info_log("Done.")
 
 
@@ -203,48 +226,22 @@ def filter_data(data):
 
     execution_log.info_log("Filtering data.")
 
-
-    parameter_names = global_parameters.get_global_parameters_names()
-    
-    ### get parameters keys
-    par_input_instance = parameter_names[0]
-
-    par_lat_column_name = parameter_names[1]
-    par_lon_column_name = parameter_names[2]
-    par_number_column_name = parameter_names[3]
-    par_street_column_name = parameter_names[4]
-
-    par_min_lat = parameter_names[5]
-    par_max_lat = parameter_names[6]
-    par_min_lon = parameter_names[7]
-    par_max_lon = parameter_names[8]
-
-    par_block_point_repetition = parameter_names[9]
-    par_block_no_number = parameter_names[10]
-    par_block_no_street = parameter_names[11]
-    par_reaching_filter = parameter_names[12]
-
-
     ### get values that will be used with their keys
-    lat_column_name = global_parameters.get_parameter(par_lat_column_name)
-    lon_column_name = global_parameters.get_parameter(par_lon_column_name)
-    number_column_name = global_parameters.get_parameter(par_number_column_name)
-    street_column_name = global_parameters.get_parameter(
-                                                par_street_column_name
-                                            )
+    lat_column_name = global_parameters.lat_column_name()
+    lon_column_name = global_parameters.lon_column_name()
+    number_column_name = global_parameters.number_column_name()
+    street_column_name = global_parameters.street_column_name()
     
-    min_lat = global_parameters.get_parameter(par_min_lat)
-    max_lat = global_parameters.get_parameter(par_max_lat)
-    min_lon = global_parameters.get_parameter(par_min_lon)
-    max_lon = global_parameters.get_parameter(par_max_lon)
+    min_lat = global_parameters.min_lat()
+    max_lat = global_parameters.max_lat()
+    min_lon = global_parameters.min_lon()
+    max_lon = global_parameters.max_lon()
     
-    block_point_repetition = global_parameters.get_parameter(
-                                                    par_number_column_name
-                                                )
+    block_point_repetition = global_parameters.block_no_number()
 
-    block_no_number = global_parameters.get_parameter(par_block_no_number)
-    block_no_street = global_parameters.get_parameter(par_block_no_street)
-    reaching_filter = global_parameters.get_parameter(par_reaching_filter)
+    block_no_number = global_parameters.block_no_number()
+    block_no_street = global_parameters.block_no_street()
+    reaching_filter = global_parameters.reaching_filter()
     
     ### filter data
     data = filter_by_lat_and_lon(
