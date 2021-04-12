@@ -19,16 +19,16 @@ def init_osrm_server():
     command += "--algorithm=MLD" + " "
     command += "--max-table-size=1000000"
 
-    print()
-
-    print(command)
-
-    print()
 
     server_process = status_variables.osrm_server_process()
 
     if (server_process != None):
         execution_log.info_log("Process not initiated. There is already a running osrm server.")
+
+    print()
+    execution_log.info_log(
+        "Starting OSRM server with command: \n    " + command
+    )
 
     # The command below runs the server and shows output in the terminal
     # server_process = subprocess.Popen("exec " + command, shell=True)
@@ -46,6 +46,8 @@ def init_osrm_server():
     status_variables.set_osrm_server_process(server_process)
 
     time.sleep(2)
+
+    execution_log.info_log("Done.")
 
 def finish_osrm_server():
     """Stop a osrm server if one exists

@@ -87,7 +87,7 @@ if __name__=="__main__":
 
     pickups_and_deliveries = route_pds + dist_pds + rand_pds
 
-    print(pickups_and_deliveries)
+    
 
     osrm_manager.finish_osrm_server()
 
