@@ -1,5 +1,6 @@
 import numpy
 import random
+import copy
 from progress.bar import Bar
 
 
@@ -50,8 +51,8 @@ def calculate_matrices(points):
         bar.next()
 
     bar.finish()
-    numpy.array(distance_matrix)
-    numpy.array(time_matrix)
+    distance_matrix = numpy.array(distance_matrix)
+    time_matrix = numpy.array(time_matrix)
     execution_log.info_log("Done.")
 
     return (distance_matrix, time_matrix)
@@ -59,7 +60,8 @@ def calculate_matrices(points):
 def generate_cvrp_capacity():
     execution_log.info_log("Generating CVRP capacity...")
 
-    capacity = random.randint(1,20) * 10
+    # capacity = random.randint(1,20) * 10
+    capacity = 1000000000
 
     execution_log.info_log("Done.")
     return capacity
@@ -83,3 +85,80 @@ def generate_cvrp_demands(number_of_clientes):
     
     return demands
 
+
+def generate_pickups_and_deliveries_by_routes(routes):
+    pairs_pick_deli = []
+    for route in routes:
+        copy_route = copy.copy(route)
+
+        route_pairs = []
+
+        while (len(route) > 1):
+            pair = random.sample(route, 2)
+            route.remove(pair[0])
+            route.remove(pair[1])
+
+            pair = tuple(pair)
+
+            route_pairs.append(pair)
+
+        if (len(route) == 1):
+            node = routes.pop()
+            copy_route.remove(node)
+            
+            pair = [node, random.sample(copy_route, 1)[0]]
+            random.shuffle(pair)
+            pair = tuple(pair)
+
+            route_pairs.append(pair)
+        
+        pairs_pick_deli += route_pairs
+
+    return pairs_pick_deli
+
+
+def generate_pickups_and_deliveries_by_distance(distance_pd, distance_matrix):
+    pairs = []
+    already_chosen = set()
+
+    for i in range(len(distance_matrix)):
+        if (i in already_chosen):
+            continue
+        
+        already_chosen.add(i)
+
+        indexes = set(numpy.where(distance_matrix[i] < distance_pd)[0])
+        indexes -= already_chosen
+
+        if (len(indexes) < 1):
+            continue
+
+        j = random.sample(indexes, 1)[0]
+        already_chosen.add(j)
+
+        pair = [i, j]
+        random.shuffle(pair)
+        pair = tuple(pair)
+
+
+        pairs.append(pair)
+    
+    return pairs
+
+def generate_pickups_and_deliveries_randomly(output_size):
+    pairs = []
+    
+    indexes = [x for x in range(output_size)]
+    random.shuffle(indexes)
+    indexes = set(indexes)
+
+    while (len(indexes) > 1):
+        i, j = tuple(random.sample(indexes, 2))
+
+        indexes.remove(i)
+        indexes.remove(j)
+        
+        pair = (i, j)
+        pairs.append(pair)
+    
+    return pairs

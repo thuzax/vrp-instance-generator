@@ -1,5 +1,3 @@
-import copy
-
 from src import exceptions
 
 def init():
@@ -26,8 +24,14 @@ def init():
         "reaching_filter",
         "output_size",
         "output_name",
+        "output_path",
         "distances_locally",
-        "config_file"
+        "max_distance_pd",
+        "osrm_routed_path",
+        "filo_path",
+        "osrm_map_path",
+        "config_file",
+        "paths_file"
     )
 
     global _int_parameters
@@ -46,6 +50,8 @@ def init():
     # Name of the input instance
     _dict_parameters["instance_name"] = None
     # Name of the output file
+    _dict_parameters["output_name"] = None
+    # Path to the output file
     _dict_parameters["output_name"] = None
     # Number of rows of the output
     _dict_parameters["output_size"] = None
@@ -79,6 +85,21 @@ def init():
     # Parameter configuration file
     _dict_parameters["config_file"] = None
 
+    # Max radius for the pickup and delivery generation limited by distance
+    _dict_parameters["max_distance_pd"] = 10000000
+
+    # File with the paths for external programs
+    _dict_parameters["paths_file"] = "paths.json"
+
+    # Path to osrm-routed command line
+    _dict_parameters["osrm_routed_path"] = None
+
+    # Path to osrm region that will be utilized
+    _dict_parameters["osrm_map_path"] = None
+
+
+    # Path to filo command line
+    _dict_parameters["filo_path"] = None
 
 
 def set_parameter(parameter_name, value):
@@ -93,6 +114,16 @@ def set_parameter(parameter_name, value):
 
     if (parameter_name in _float_parameters and value is not None):
         value = float(value)
+
+    if (parameter_name == "output_name"):
+        splitted_path = value.split("/")
+        name = splitted_path[-1]
+        name = name.split(".")[0]
+
+        _dict_parameters["output_path"] = "/".join(splitted_path[:-1])
+        _dict_parameters["output_name"] = name
+
+        return
 
     _dict_parameters[parameter_name] = value
 
@@ -137,7 +168,19 @@ def output_size():
     return get_parameter("output_size")
 def output_name():
     return get_parameter("output_name")
+def output_path():
+    return get_parameter("output_path")
 def distances_locally():
     return get_parameter("distances_locally")
+def max_distance_pd():
+    return get_parameter("max_distance_pd")
+def filo_path():
+    return get_parameter("filo_path")
+def osrm_routed_path():
+    return get_parameter("osrm_routed_path")
+def osrm_map_path():
+    return get_parameter("osrm_map_path")
+def paths_file():
+    return get_parameter("paths_file")
 def config_file():
     return get_parameter("config_file")

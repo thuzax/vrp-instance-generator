@@ -2,6 +2,7 @@ import requests
 import json
 import random
 import time
+import numpy
 
 from src import global_parameters
 from src import exceptions
@@ -43,7 +44,6 @@ def request_dist_and_time_local(x, y):
     response = requests.get(url)
 
     if (response.status_code != 200):
-        print(x, y)
         raise exceptions.CouldNotReachTheRoutingServer(
                                 url, 
                                 response.status_code
@@ -144,7 +144,6 @@ def request_dist_and_time_from_source_remote(source_position, points):
                                 response.status_code
                             )
 
-    print(response)
     data = json.loads(response.content)
     
     if (data["code"].upper() != "OK"):
@@ -161,6 +160,9 @@ def request_dist_and_time_from_source_remote(source_position, points):
 
     distances[source_position] = 0
     times[source_position] = 0
+
+    distances = numpy.array(distances)
+    times = numpy.array(times)
 
     return (distances, times)
 

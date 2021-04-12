@@ -1,3 +1,6 @@
+import random
+import copy
+
 from src import execution_log
 
 def make_file_text(name,size, capacity, points, demands):
@@ -11,13 +14,20 @@ def make_file_text(name,size, capacity, points, demands):
     text += "\n"
     text += "TYPE\t:\t" + "CVRP"
     text += "\n"
-    text += "DIMENSION\t:\t" + str(size)
+    text += "DIMENSION\t:\t" + str(size+1)
     text += "\n"
     text += "EDGE_WEIGHT_TYPE\t:\t" + "EUC_2D"
     text += "\n"
     text += "CAPACITY\t:\t" + str(capacity)
     text += "\n"
     text += "NODE_COORD_SECTION"
+    text += "\n"
+
+    random_lat = random.randint(0, len(points)-1)
+    random_lon = random.randint(0, len(points)-1)
+    fake_depot = (points[random_lat][0], points[random_lon][1])
+
+    text += str(1) + "\t" + str(fake_depot[0]) + "\t" + str(fake_depot[1])
     text += "\n"
 
     for i in range(size):
@@ -29,7 +39,7 @@ def make_file_text(name,size, capacity, points, demands):
 
     text += str(1) + "\t" + str(0) + "\n"
 
-    for i in range(size-1):
+    for i in range(size):
         text += str(i+2) + "\t" + str(demands[i])
         text += "\n"
 
@@ -62,3 +72,24 @@ def write_file(output_file_name, size, capacity, points, demands):
         output_file.write(output_text)
     
     execution_log.info_log("Done.")
+
+
+def read_solution_routes(origin_file_name):
+    solution_file_name = origin_file_name + "_seed-0.vrp.sol"
+
+    with open(solution_file_name, "r") as solution_file:
+        routes_str = solution_file.read().split("\n")[:-1]
+    
+    routes = []
+
+    for route_str in routes_str:
+        nodes = route_str.split(":")[1].strip().split(" ")
+        nodes = [int(node)-1 for node in nodes]
+
+        nodes = set(nodes)
+
+        routes.append(nodes)
+
+    return routes
+
+    

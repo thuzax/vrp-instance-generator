@@ -20,13 +20,30 @@ def read_configuration_file():
         dict_config = json.loads(text)
 
         for key, value in dict_config.items():
+            key = key.lower()
             if (key == "config_file"):
                 continue
             
-            key = key.lower()
             global_parameters.set_parameter(key, value)
 
-    
+def read_paths_file():
+    """Read the paths file which contains the path for external programs
+    """
+
+    paths_file_name = global_parameters.paths_file()
+
+    with open(paths_file_name, "r") as paths_file:
+        text = paths_file.read()
+        dict_paths = json.loads(text)
+
+        for key, value in dict_paths.items():
+            key = key.lower()
+
+            key += "_path"
+            global_parameters.set_parameter(key, value)
+
+
+
 def parse_command_line_arguments():
     """Manage the command line arguments
     """
