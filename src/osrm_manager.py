@@ -8,7 +8,8 @@ from src import status_variables
 
 
 def init_osrm_server():
-
+    """Initialize a osrm server using the command osrm-routed. It will not start a new server if there is another one running.
+    """
     osrm_command_path = global_parameters.osrm_routed_path()
     osrm_map_path = global_parameters.osrm_map_path()
     
@@ -47,6 +48,9 @@ def init_osrm_server():
     time.sleep(2)
 
 def finish_osrm_server():
+    """Stop a osrm server if one exists
+    """
+
     server_process = status_variables.osrm_server_process()
 
     if (server_process == None):

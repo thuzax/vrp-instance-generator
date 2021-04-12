@@ -1,9 +1,13 @@
 import os
 import subprocess
+import execution_log
 
 from src import global_parameters
 
 def run_filo(instance, output_path):
+    """Run the filo algorithm. It uses the variable filo_path, provided by the paths file.
+    """
+
     instance = os.path.abspath(instance)
     output_path = os.path.abspath(output_path)
     
@@ -15,7 +19,7 @@ def run_filo(instance, output_path):
     command += "--parser X" + " "
     command += "--outpath " + output_path + " "
 
-    print()
+    print(execution_log.info_log("Starting filo"))
 
     print(command)
 

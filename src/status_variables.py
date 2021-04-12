@@ -12,12 +12,16 @@ def init():
     _dict_status_variables["osrm_server_process"] = None
 
 
-def set_osrm_server_process(pid):
+def set_osrm_server_process(process):
+    """Store the process of the osrm server if there is no other stored.
+    """
     if (_dict_status_variables["osrm_server_process"] is not None):
         return
-    _dict_status_variables["osrm_server_process"] = pid
+    _dict_status_variables["osrm_server_process"] = process
 
 def unset_osrm_server_process():
+    """Free the osrm server process allowing the initialization of a new one
+    """
     _dict_status_variables["osrm_server_process"] = None
 
 def osrm_server_process():
