@@ -7,7 +7,7 @@ from src import status_variables
 from src import csv_manager
 from src import filter_csv
 from src import generation_manager
-from src import cvrp_file_manager
+from src import vrp_files_manager
 from src import osrm_manager
 from src import filo_manager
 
@@ -60,7 +60,7 @@ if __name__=="__main__":
 
         cvrp_file_name = output_path + "/" + "cvrp_" + output_name + ".vrp"
         
-        cvrp_file_manager.write_file(
+        vrp_files_manager.write_cvrp_file(
                             cvrp_file_name,
                             output_size, 
                             cvrp_capacity, 
@@ -70,7 +70,7 @@ if __name__=="__main__":
 
         filo_manager.run_filo(cvrp_file_name, output_path)
 
-        routes = cvrp_file_manager.read_solution_routes(cvrp_file_name)
+        routes = vrp_files_manager.read_cvrp_solution_routes(cvrp_file_name)
         
         route_pd = generation_manager.generate_pickups_and_deliveries_by_routes(
                                         routes
@@ -113,6 +113,23 @@ if __name__=="__main__":
                                                 fleet_size, 
                                                 clients_classif,
                                             )
+
+
+
+        pdtwlhf_file_name = output_path + "/" + "pdtwhf_" + output_name + ".vrp"
+        instance_name = output_name
+        vrp_files_manager.write_pd_tw_lhf(
+                            points=points,
+                            pickups_and_deliveries=pickups_and_deliveries,
+                            service_times=services_times,
+                            time_windows=time_windows,
+                            clients_classif=clients_classif,
+                            fleets_sizes=[urban_fleet_size, rural_fleet_size],
+                            distance_matrix=distance_matrix,
+                            time_matrix=time_matrix,
+                            output_name=pdtwlhf_file_name,
+                            instance_name=instance_name
+                        )
 
         print(points)
         print(pickups_and_deliveries)
