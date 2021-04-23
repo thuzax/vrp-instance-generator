@@ -19,7 +19,7 @@ def run_filo(instance, output_path):
     command += "--parser X" + " "
     command += "--outpath " + output_path + " "
 
-    print()
+    # print()
     execution_log.info_log(
         "Starting filo with command: \n    " + command
     )

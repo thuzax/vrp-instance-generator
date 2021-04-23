@@ -1,5 +1,4 @@
 import pandas
-import logging
 
 from src import global_parameters
 from src import execution_log
@@ -28,16 +27,16 @@ def read_input_file():
 
     return data_frame
 
+
 def write_output_file(data, output_name):
     """Write the data in a CSV file
     """
-    print(output_name)
+    # print(output_name)
     execution_log.info_log("Writing CSV file...")
 
     data.to_csv(output_name + ".csv", index=False)
 
     execution_log.info_log("Done.")
-
 
 
 def get_points_coordinates(data):

@@ -26,6 +26,9 @@ def read_configuration_file():
             
             global_parameters.set_parameter(key, value)
 
+    check_parameters()
+
+
 def read_paths_file():
     """Read the paths file which contains the path for external programs
     """
@@ -41,7 +44,6 @@ def read_paths_file():
 
             key += "_path"
             global_parameters.set_parameter(key, value)
-
 
 
 def parse_command_line_arguments():
@@ -252,10 +254,18 @@ def parse_command_line_arguments():
                                                 arguments["street_column_name"]
                                             )
 
+    # print(arguments)
+
+    for key, value in arguments.items():
+        global_parameters.set_parameter(key, value)
+    
+    check_parameters()
+
+def check_parameters():
     # If --use-number-column was not specified but arguments which depends
     # on it were, an exception is raised
-    if (arguments["number_column_name"] is None):
-        if (arguments["block_no_number"]):
+    if (global_parameters.number_column_name() is None):
+        if (global_parameters.block_no_number()):
             raise exceptions.ParamUsedButNoParamRequired(
                                 "--block-no-number", 
                                 "--use-number-column"
@@ -263,14 +273,10 @@ def parse_command_line_arguments():
 
     # If --use-street-name was not specified but arguments which depends
     # on it were, an exception is raised
-    if (arguments["number_column_name"] is None):
-        if (arguments["block_no_street"]):
+    if (global_parameters.number_column_name() is None):
+        if (global_parameters.block_no_street()):
             raise exceptions.ParamUsedButNoParamRequired(
                                 "--block-no-street", 
                                 "--use-street-name"
                             )
 
-    # print(arguments)
-
-    for key, value in arguments.items():
-        global_parameters.set_parameter(key, value)

@@ -1,3 +1,4 @@
+
 def init():
     global _dict_status_variables
     _dict_status_variables = {}
@@ -19,6 +20,7 @@ def set_osrm_server_process(process):
         return
     _dict_status_variables["osrm_server_process"] = process
 
+
 def unset_osrm_server_process():
     """Free the osrm server process allowing the initialization of a new one
     """
@@ -26,3 +28,5 @@ def unset_osrm_server_process():
 
 def osrm_server_process():
     return _dict_status_variables["osrm_server_process"]
+def random_seed():
+    return _dict_status_variables["random_seed"]
