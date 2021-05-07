@@ -72,21 +72,22 @@ if __name__=="__main__":
 
         routes = vrp_files_manager.read_cvrp_solution_routes(cvrp_file_name)
         
-        route_pd = generation_manager.generate_pickups_and_deliveries_by_routes(
-                                        routes
-                                    )
-        
-        distance_pd = global_parameters.max_distance_pd()
-        dist_pds = generation_manager.generate_pickups_and_deliveries_by_distance(
-                                        distance_pd,
-                                        distance_matrix
-                                    )
+        pickups_and_deliveries = (
+            generation_manager.generate_pickups_and_deliveries(
+                routes=routes,
+                distance_matrix=distance_matrix,
+                output_size=output_size
+            )
+        )
 
-        rand_pds = generation_manager.generate_pickups_and_deliveries_randomly(
-                                        output_size
-                                    )
+        points, pickups_and_deliveries = (
+            generation_manager.remove_points_without_request(
+                        points,
+                        pickups_and_deliveries
+                    )
+            )
 
-        pickups_and_deliveries = route_pd + dist_pds + rand_pds
+        exit(0)
 
         services_times = generation_manager.generate_services_times(
                                                 points
@@ -131,12 +132,12 @@ if __name__=="__main__":
                             instance_name=instance_name
                         )
 
-        print(points)
-        print(pickups_and_deliveries)
-        print(services_times)
-        print(time_windows)
-        print(clients_classif)
-        print(urban_fleet_size, rural_fleet_size)
+        # print(points)
+        # print(pickups_and_deliveries)
+        # print(services_times)
+        # print(time_windows)
+        # print(clients_classif)
+        # print(urban_fleet_size, rural_fleet_size)
 
     except Exception as e:
         exception = e

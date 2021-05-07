@@ -19,6 +19,9 @@ def init():
         "max_lat",
         "min_lon",
         "max_lon",
+        "pick_deli_by_route_per",
+        "pick_deli_by_distance_per",
+        "pick_deli_random_per",
         "block_point_repetition",
         "block_no_number",
         "block_no_street",
@@ -44,7 +47,9 @@ def init():
         "filo_path",
         "osrm_map_path",
         "config_file",
-        "paths_file"
+        "paths_file",
+        "repeat_pd_only_if_needed",
+        "no_repeat_pd"
     )
 
     global _int_parameters
@@ -90,6 +95,10 @@ def init():
     _dict_parameters["max_lat"] = None
     _dict_parameters["min_lon"] = None
     _dict_parameters["max_lon"] = None
+
+    _dict_parameters["pick_deli_by_route_per"] = 1
+    _dict_parameters["pick_deli_by_distance_per"] = 1
+    _dict_parameters["pick_deli_random_per"] = 1
 
     # If true, prevents repetition of points
     _dict_parameters["block_point_repetition"] = False
@@ -139,6 +148,10 @@ def init():
     _dict_parameters["filo_path"] = None
 
     _dict_parameters["random_seed"] = 0
+
+    _dict_parameters["no_repeat_pd"] = True
+
+    _dict_parameters["repeat_pd_only_if_needed"] = False
 
 
 
@@ -209,6 +222,12 @@ def min_lon():
     return get_parameter("min_lon")
 def max_lon():
     return get_parameter("max_lon")
+def pick_deli_by_route_per():
+    return get_parameter("pick_deli_by_route_per")
+def pick_deli_by_distance_per():
+    return get_parameter("pick_deli_by_distance_per")
+def pick_deli_random_per():
+    return get_parameter("pick_deli_random_per")
 def block_point_repetition():
     return get_parameter("block_point_repetition")
 def block_no_number():
@@ -261,3 +280,7 @@ def paths_file():
     return get_parameter("paths_file")
 def config_file():
     return get_parameter("config_file")
+def repeat_pd_only_if_needed():
+    return _dict_parameters["repeat_pd_only_if_needed"]
+def no_repeat_pd():
+    return _dict_parameters["no_repeat_pd"]

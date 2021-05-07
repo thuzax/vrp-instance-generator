@@ -1,4 +1,6 @@
 import random
+import numpy
+from numpy.lib.polynomial import polymul
 
 from progress.bar import Bar
 
@@ -77,7 +79,7 @@ def make_cvrp_file_text(name,size, capacity, points, demands):
     text += "\n"
 
     for i in range(size):
-        text += str(i+1) + "\t" + str(points[i][0]) + "\t" + str(points[i][1])
+        text += str(i+2) + "\t" + str(points[i][0]) + "\t" + str(points[i][1])
         text += "\n"
         
     text += "DEMAND_SECTION"
@@ -160,6 +162,9 @@ def make_pickups_and_deliveries_nodes(
     text_pickups = ""
     text_deliveries = ""
     i = 1
+
+    map_file_nodes_to_points = {}
+
     for pickup, delivery in pickup_and_deliveries:
         tw_pickup, tw_delivery = time_windows[(pickup, delivery)]
         
@@ -185,6 +190,8 @@ def make_pickups_and_deliveries_nodes(
                                 clients_classif[pickup]
                         )) # 0 if urban, 1 if rural
         text_pickups += "\n"
+
+        map_file_nodes_to_points[i] = pickup
         
         j = i + len(pickup_and_deliveries)
 
@@ -211,22 +218,45 @@ def make_pickups_and_deliveries_nodes(
                         )) # 0 if urban, 1 if rural
         text_deliveries += "\n"
 
+        map_file_nodes_to_points[j] = delivery
+
         i += 1
 
     text += text_pickups + text_deliveries
 
-    return text
+    return (text, map_file_nodes_to_points)
 
 
-def make_edges(edge_title, matrix):
+def make_edges(edge_title, matrix, points_mapping=None):
     text = ""
     text += edge_title + "\n"
-    for line in matrix:
-        for i in range(len(line)-1):
-            item = line[i]
-            text += str(item) + " "
-        text += str(line[-1])
-        text += "\n"
+
+    if (points_mapping is None):
+        
+        for line in matrix:
+            for i in range(len(line)-1):
+                item = line[i]
+                text += str(item) + " "
+            text += str(line[-1])
+            text += "\n"
+        
+    else:
+        for i in range(1, len(points_mapping)+1):
+            point_index = points_mapping[i]
+
+            for j in range(1, len(points_mapping)):
+                other_point_index = points_mapping[j]
+
+                value = matrix[point_index][other_point_index]
+
+                text += str(value) + " "
+
+            other_point_index = points_mapping[len(points_mapping)]
+
+            value = matrix[point_index][other_point_index]
+            text += str(value) + " "
+            text += "\n"
+
 
     return text
     
@@ -248,7 +278,7 @@ def write_pd_tw_lhf(
 ):
     execution_log.info_log("Writing PDPTWLHF file...")
     bar = Bar("Processing:", max=4,suffix='%(percent)d%%')
-
+    
     header = make_header(
             instance_name=instance_name,
             comment="",
@@ -265,7 +295,7 @@ def write_pd_tw_lhf(
     bar.next()
 
 
-    nodes = make_pickups_and_deliveries_nodes(
+    nodes, nodes_to_points_mapping = make_pickups_and_deliveries_nodes(
                 points=points,
                 pickup_and_deliveries=pickups_and_deliveries,
                 service_times=service_times,
@@ -275,11 +305,19 @@ def write_pd_tw_lhf(
 
     bar.next()
 
-    edges_distance = make_edges("EDGES_DISTANCE", distance_matrix)
+    edges_distance = make_edges(
+                        "EDGES_DISTANCE", 
+                        distance_matrix, 
+                        nodes_to_points_mapping
+                    )
 
     bar.next()
 
-    edges_time = make_edges("EDGES_TIME", time_matrix)
+    edges_time = make_edges(
+                    "EDGES_TIME", 
+                    time_matrix, 
+                    nodes_to_points_mapping
+                )
 
     bar.next()
 

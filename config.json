@@ -7,6 +7,9 @@
     "MAX_LAT" : null,
     "MIN_LON" : null,
     "MAX_LON" : null,
+    "PICK_DELI_BY_ROUTE_PER" : 30,
+    "PICK_DELI_BY_DISTANCE_PER" : 30,
+    "PICK_DELI_RANDOM_PER" : 5,
     "BLOCK_POINT_REPETITION" : false,
     "BLOCK_NO_NUMBER" : false,
     "BLOCK_NO_STREET" : false,
@@ -20,8 +23,8 @@
     "MIN_SERVICE_TIME" : 5,
     "MAX_SERVICE_TIME" : 5,
     "GENERATE_URB_RUR_APTITUDE": true,
-    "PER_NUMBER_URBAN_CENTERS" : 10,
-    "MAX_URBAN_DISTANCE" : 0.02,
+    "PER_NUMBER_URBAN_CENTERS" : 5,
+    "MAX_URBAN_DISTANCE" : 0.03,
     "GENERATION_URB_RUR_METHOD" : "clustering",
     "RANDOM_SEED" : 10
 }

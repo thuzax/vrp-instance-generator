@@ -8,6 +8,7 @@ import scipy.spatial
 import sklearn.cluster
 import matplotlib.pyplot
 from progress.bar import Bar
+from sklearn.externals.six import remove_move
 
 
 from src import global_parameters
@@ -58,7 +59,11 @@ def calculate_matrices(points):
 
     bar.finish()
     distance_matrix = numpy.array(distance_matrix)
+    # distance_matrix *= 1000
+    distance_matrix = numpy.around(distance_matrix)
     time_matrix = numpy.array(time_matrix)
+    time_matrix = numpy.around(time_matrix)
+    
     execution_log.info_log("Done.")
 
     return (distance_matrix, time_matrix)
@@ -92,23 +97,48 @@ def generate_cvrp_demands(number_of_clientes):
     return demands
 
 
-def generate_pickups_and_deliveries_by_routes(routes):
+def generate_pickups_and_deliveries_by_routes(routes, has_pd):
     pairs_pick_deli = []
-    for route in routes:
-        copy_route = copy.copy(route)
+    pick_deli_probability = global_parameters.pick_deli_by_route_per()
+    repeat_pd_only_if_needed = global_parameters.repeat_pd_only_if_needed()
+    no_repeat_pd = global_parameters.no_repeat_pd()
 
+    for route in routes:
+        items_to_remove = set()
+        for item in route:
+            if (random.randint(1,100) > pick_deli_probability):
+                items_to_remove.add(item)
+        
+        route -= items_to_remove
+
+        copy_route = copy.copy(route)
         route_pairs = []
 
         while (len(route) > 1):
             pair = random.sample(route, 2)
+            if (
+                (repeat_pd_only_if_needed or no_repeat_pd)
+                and (has_pd[pair[0]] or has_pd[pair[1]])
+            ):
+                if (has_pd[pair[0]]):
+                    route.remove(pair[0])
+                
+                if (has_pd[pair[1]]):
+                    route.remove(pair[1])
+                
+                continue
+
             route.remove(pair[0])
             route.remove(pair[1])
 
-            pair = tuple(pair)
 
+            pair = tuple(pair)
             route_pairs.append(pair)
 
-        if (len(route) == 1):
+            has_pd[pair[0]] = True
+            has_pd[pair[1]] = True
+        
+        if (len(route) == 1 and len(copy_route) > 1 and (not no_repeat_pd)):
             node = route.pop()
             
             second_node = random.sample(copy_route, 1)[0]
@@ -121,15 +151,35 @@ def generate_pickups_and_deliveries_by_routes(routes):
             pair = tuple(pair)
 
             route_pairs.append(pair)
-        
+            
+            has_pd[pair[0]] = True
+            has_pd[pair[1]] = True
+
         pairs_pick_deli += route_pairs
 
     return pairs_pick_deli
 
 
-def generate_pickups_and_deliveries_by_distance(distance_pd, distance_matrix):
+def generate_pickups_and_deliveries_by_dist(
+    distance_pd, 
+    distance_matrix, 
+    has_pd
+):
     pairs = []
     already_chosen = set()
+
+    no_repeat_pd = global_parameters.no_repeat_pd() 
+    repeat_pd_only_if_needed = global_parameters.repeat_pd_only_if_needed()
+
+    if (no_repeat_pd or repeat_pd_only_if_needed):
+        indices_with_pd = set(
+            [i if has_pd[i] else None for i in range(len(distance_matrix))]
+        )
+        indices_with_pd.remove(None)
+        
+        already_chosen = already_chosen.union(indices_with_pd)
+
+    pick_deli_probability = global_parameters.pick_deli_by_distance_per()
 
     for i in range(len(distance_matrix)):
         if (i in already_chosen):
@@ -137,41 +187,211 @@ def generate_pickups_and_deliveries_by_distance(distance_pd, distance_matrix):
         
         already_chosen.add(i)
 
-        indexes = set(numpy.where(distance_matrix[i] < distance_pd)[0])
-        indexes -= already_chosen
-
-        if (len(indexes) < 1):
+        if (random.randint(1,100) > pick_deli_probability):
             continue
 
-        j = random.sample(indexes, 1)[0]
+        indices = set(numpy.where(distance_matrix[i] < distance_pd)[0])
+        indices -= already_chosen
+
+        if (len(indices) < 1):
+            continue
+
+        j = random.sample(indices, 1)[0]
         already_chosen.add(j)
+        while (
+            len(already_chosen) < len(indices)
+            and random.randint(1,100) > pick_deli_probability
+        ):
+            j = random.sample(indices, 1)[0]
+            already_chosen.add(j)
+        
+        if (len(already_chosen) == len(indices)):
+            continue
 
         pair = [i, j]
         random.shuffle(pair)
         pair = tuple(pair)
 
+        has_pd[pair[0]] = True
+        has_pd[pair[1]] = True
 
         pairs.append(pair)
     
     return pairs
 
-def generate_pickups_and_deliveries_randomly(output_size):
+def generate_pickups_and_deliveries_randomly(output_size, has_pd):
     pairs = []
     
-    indexes = [x for x in range(output_size)]
-    random.shuffle(indexes)
-    indexes = set(indexes)
+    indices = [x for x in range(output_size)]
+    indices = set(indices)
 
-    while (len(indexes) > 1):
-        i, j = tuple(random.sample(indexes, 2))
+    pick_deli_probability = global_parameters.pick_deli_random_per()
+    no_repeat_pd = global_parameters.no_repeat_pd()
+    repeat_pd_only_if_needed = global_parameters.repeat_pd_only_if_needed()
 
-        indexes.remove(i)
-        indexes.remove(j)
+    if (no_repeat_pd or repeat_pd_only_if_needed):
+        indices_with_pd = set(
+            [i if has_pd[i] else None for i in range(output_size)]
+        )
+        indices_with_pd.remove(None)
+    
+        indices -= indices_with_pd
+
+    while (len(indices) > 1):
+        i = random.sample(indices, 1)[0]
+        indices.remove(i)
+        if (random.randint(1,100) > pick_deli_probability):
+            continue
+        
+        if (has_pd[i] and (no_repeat_pd or repeat_pd_only_if_needed)):
+            continue
+        
+        j = random.sample(indices, 1)[0]
+        indices.remove(j)
+        
+        while (
+            len(indices) > 0 
+            and random.randint(1,100) > pick_deli_probability
+        ):
+            j = random.sample(indices, 1)[0]
+            indices.remove(j)
+            if (has_pd[j] and (no_repeat_pd or repeat_pd_only_if_needed)):
+                continue
         
         pair = (i, j)
         pairs.append(pair)
+        has_pd[i] = True
+        has_pd[j] = True
+
     
     return pairs
+
+def generate_pickups_and_deliveries(
+    routes=None, 
+    distance_matrix=None, 
+    output_size=None
+):
+
+    has_pd = [False for i in range(len(distance_matrix))]
+
+    route_pd = generate_pickups_and_deliveries_by_routes(
+                                routes,
+                                has_pd
+                            )
+
+    distance_pd = global_parameters.max_distance_pd()
+    dist_pd = generate_pickups_and_deliveries_by_dist(
+                                    distance_pd,
+                                    distance_matrix,
+                                    has_pd
+                                )
+
+    rand_pd = generate_pickups_and_deliveries_randomly(
+                                    output_size,
+                                    has_pd
+                                )
+
+    pickups_and_deliveries = route_pd + dist_pd + rand_pd
+
+    pickups = set([pickup for pickup, delivery in pickups_and_deliveries])
+    deliveries = set([delivery for pickup, delivery in pickups_and_deliveries])
+
+    chosen = pickups.union(deliveries)
+
+    possible_indices = set([i for i in range(output_size)]) - chosen
+
+    # Force at least one pickup or delivery for each point
+    if (
+        global_parameters.no_repeat_pd() 
+        or global_parameters.repeat_pd_only_if_needed()
+    ):
+
+        while (len(possible_indices) > 1):
+            i = possible_indices.pop()
+            
+            j = random.sample(possible_indices, 1)[0]
+
+            possible_indices.remove(j)
+
+            pair = [i, j]
+            random.shuffle(pair)
+            pair = tuple(pair)
+            
+            pickups_and_deliveries.append(pair)
+            pickups.add(pair[0])
+            deliveries.add(pair[1])
+
+            has_pd[pair[0]] = True
+            has_pd[pair[1]] = True
+
+        if (len(possible_indices) == 1):
+            if (global_parameters.no_repeat_pd()):
+                element = possible_indices.pop()
+                text = ""
+                text += "The element <" 
+                text += str(element) 
+                text += "> will not have a pair. " 
+                text += "Even output size with no repetitions."
+                execution_log.warning_log(text)
+            else:
+                i = possible_indices.pop()
+                
+                j = random.sample(
+                            (
+                                set([k for k in range(output_size)]) 
+                                - set([i])
+                            ), 
+                            1
+                        )[0]
+
+                pair = [i, j]
+                random.shuffle(pair)
+                pair = tuple(pair)
+                
+                pickups_and_deliveries.append(pair)
+                pickups.add(pair[0])
+                deliveries.add(pair[1])
+
+                has_pd[pair[0]] = True
+                has_pd[pair[1]] = True
+            
+                text = ""
+                text += "The element <" 
+                text += str(j) 
+                text += "> was repeated as a pair of element <" 
+                text += str(i)
+                text += ">."
+                execution_log.warning_log(text)
+
+
+    else:
+        for i in range(output_size):
+            if (i in pickups):
+                continue
+            if i in deliveries:
+                continue
+            
+            j = random.randint(0,output_size-1)
+            while (i == j):
+                j = random.randint(0,output_size-1)
+            pair = [i, j]
+            random.shuffle(pair)
+            pair = tuple(pair)
+            
+            pickups_and_deliveries.append(pair)
+            pickups.add(pair[0])
+            deliveries.add(pair[1])
+
+            has_pd[pair[0]] = True
+            has_pd[pair[1]] = True
+
+
+    print(pickups_and_deliveries)
+    print(has_pd)
+
+    return pickups_and_deliveries
+
+
 
 
 def duplicate_pick_and_deli_points(pickups_and_deliveries, points):
@@ -229,6 +449,46 @@ def duplicate_pick_and_deli_points(pickups_and_deliveries, points):
     return pickups, deliveries, pickups_dests, delis_origs
 
 
+def remove_points_without_request(points, pickups_and_deliveries):
+    pickups = set([i for i, j in pickups_and_deliveries])
+    deliveries = set([j for i, j in pickups_and_deliveries])
+
+    print(pickups, deliveries)
+
+
+    for i, point in enumerate(points):
+        print(i, point)
+    
+    print(pickups_and_deliveries)
+
+    maintained_indices = []
+    removed_indices = []
+
+    for i in range(len(points)):
+        if (i not in pickups and i not in deliveries):
+            removed_indices.append(i)
+            continue
+        maintained_indices.append(i)
+
+    print(maintained_indices)
+    points = [points[i] for i in maintained_indices]
+
+    for i in removed_indices:
+        for index, pd in enumerate(pickups_and_deliveries):
+            pickup, delivery = pd
+            if (pickup > i):
+                pickup -= 1
+            if (delivery > i):
+                delivery -= 1
+            pickups_and_deliveries[index] = (pickup, delivery)
+    
+    for i, point in enumerate(points):
+        print(i, point)
+    print(pickups_and_deliveries)
+
+    return points, pickups_and_deliveries
+    
+
 def generate_time_windows(
         pickups_and_deliveries,
         points,
@@ -250,7 +510,11 @@ def generate_time_windows(
 
     time_windows = {}
 
-    bar = Bar("Calculating:", max=len(points),suffix='%(percent)d%%')
+    bar = Bar(
+            "Calculating:", 
+            max=len(pickups_and_deliveries),
+            suffix='%(percent)d%%'
+        )
 
     for pickup, delivery in pickups_and_deliveries:
         
@@ -378,6 +642,10 @@ def generate_urb_rur_aptitude(points):
             )
 
     # matplotlib.pyplot.show()
+    output_path = global_parameters.output_path()
+    output_name = global_parameters.output_name()
+    fig_name = output_path + "/" + "fig_" + output_name + ".png"
+    matplotlib.pyplot.savefig(fig_name)
 
 
     return points_classif
