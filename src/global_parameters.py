@@ -49,7 +49,9 @@ def init():
         "config_file",
         "paths_file",
         "repeat_pd_only_if_needed",
-        "no_repeat_pd"
+        "no_repeat_pd",
+        "constraints_config",
+        "constraints_objects"
     )
 
     global _int_parameters
@@ -152,6 +154,10 @@ def init():
     _dict_parameters["no_repeat_pd"] = True
 
     _dict_parameters["repeat_pd_only_if_needed"] = False
+
+    _dict_parameters["constraints_config"] = None
+
+    _dict_parameters["constraints_objects"] = None
 
 
 
@@ -284,3 +290,7 @@ def repeat_pd_only_if_needed():
     return _dict_parameters["repeat_pd_only_if_needed"]
 def no_repeat_pd():
     return _dict_parameters["no_repeat_pd"]
+def constraints_config():
+    return _dict_parameters["constraints_config"]
+def constraints_objects():
+    return _dict_parameters["constraints_objects"]

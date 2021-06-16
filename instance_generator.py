@@ -11,12 +11,14 @@ from src import vrp_files_manager
 from src import osrm_manager
 from src import filo_manager
 
+from constraints import *
 
 if __name__=="__main__":
     global_parameters.init()
     arguments_handler.parse_command_line_arguments()
     arguments_handler.read_configuration_file()
     arguments_handler.read_paths_file()
+    arguments_handler.read_constraints_config_file()
 
     random.seed(global_parameters.random_seed())
     numpy.random.seed(global_parameters.random_seed())
@@ -24,7 +26,6 @@ if __name__=="__main__":
     exception = None
 
     status_variables.init()
-    
 
     try:
         osrm_manager.init_osrm_server()

@@ -1,0 +1,7 @@
+{
+    "ServiceTimeConstraint": {
+        "max_service_time": 5,
+        "min_service_time": 5,
+        "number_of_points": 10 
+    }
+}

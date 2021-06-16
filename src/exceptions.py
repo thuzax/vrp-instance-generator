@@ -33,3 +33,35 @@ class CouldNotReachTheRoutingServer(Exception):
 
         super().__init__(message)
 
+class MinServiceTimeGreaterThanMax(Exception):
+    def __init__(self):
+        message = ""
+        message += "The input param 'max_service_time' must be greater than "
+        message += "the 'max_service_time' input param."
+
+        super().__init__(message)
+
+class MinServiceTimeCannotBeNoneNegative(Exception):
+    def __init__(self):
+        message = ""
+        message += "The input param 'max_service_time'"
+        message += "must be greater or equal 0"
+
+        super().__init__(message)
+
+class GreaterThanZeroMinAndMaxServicesTimes(Exception):
+    def __init__(self):
+        message = ""
+        message += "Service Time Constraint needs a "
+        message += "'min_service_time' or 'max_service_time'"
+        message += "greater than 0"
+
+        super().__init__(message)
+
+class GreaterThanZeroParameter(Exception):
+    def __init__(self, name):
+        message = ""
+        message += "The variable " + name + " must have a value"
+        message += "greater than 0"
+
+        super().__init__(message)
