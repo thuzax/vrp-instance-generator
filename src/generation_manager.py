@@ -386,8 +386,8 @@ def generate_pickups_and_deliveries(
             has_pd[pair[1]] = True
 
 
-    print(pickups_and_deliveries)
-    print(has_pd)
+    # print(pickups_and_deliveries)
+    # print(has_pd)
 
     return pickups_and_deliveries
 
@@ -453,13 +453,13 @@ def remove_points_without_request(points, pickups_and_deliveries):
     pickups = set([i for i, j in pickups_and_deliveries])
     deliveries = set([j for i, j in pickups_and_deliveries])
 
-    print(pickups, deliveries)
+    # print(pickups, deliveries)
 
 
-    for i, point in enumerate(points):
-        print(i, point)
+    # for i, point in enumerate(points):
+    #     print(i, point)
     
-    print(pickups_and_deliveries)
+    # print(pickups_and_deliveries)
 
     maintained_indices = []
     removed_indices = []
@@ -470,7 +470,7 @@ def remove_points_without_request(points, pickups_and_deliveries):
             continue
         maintained_indices.append(i)
 
-    print(maintained_indices)
+    # print(maintained_indices)
     points = [points[i] for i in maintained_indices]
 
     for i in removed_indices:
@@ -482,9 +482,9 @@ def remove_points_without_request(points, pickups_and_deliveries):
                 delivery -= 1
             pickups_and_deliveries[index] = (pickup, delivery)
     
-    for i, point in enumerate(points):
-        print(i, point)
-    print(pickups_and_deliveries)
+    # for i, point in enumerate(points):
+    #     print(i, point)
+    # print(pickups_and_deliveries)
 
     return points, pickups_and_deliveries
     
@@ -575,8 +575,6 @@ def generate_time_windows(
 
     execution_log.info_log("Done.")
 
-
-
     return time_windows
 
 
@@ -644,9 +642,12 @@ def generate_urb_rur_aptitude(points):
     # matplotlib.pyplot.show()
     output_path = global_parameters.output_path()
     output_name = global_parameters.output_name()
+
+    matplotlib.pyplot.gca().set_aspect('equal', adjustable='box')
+    matplotlib.pyplot.xticks(rotation=-15)
+
     fig_name = output_path + "/" + "fig_" + output_name + ".png"
     matplotlib.pyplot.savefig(fig_name)
-
 
     return points_classif
 
@@ -672,8 +673,6 @@ def generate_urb_rur_aptitude_by_clustering(points):
             xytext=(0,10),
             ha="center"
         )
-
-
 
     distances_to_center = scipy.spatial.distance.cdist(
                     points_arr,

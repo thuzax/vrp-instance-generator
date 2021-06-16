@@ -13,7 +13,7 @@ from src import execution_log
 def send_request(url):
     total_time = 0
     has_response = False
-    while (not has_response and total_time < 30):
+    while (not has_response and total_time < 60):
         if (total_time > 0):
             execution_log.info_log("Retrying")
         try:

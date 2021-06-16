@@ -235,9 +235,9 @@ def make_edges(edge_title, matrix, points_mapping=None):
         
         for line in matrix:
             for i in range(len(line)-1):
-                item = line[i]
+                item = int(line[i])
                 text += str(item) + " "
-            text += str(line[-1])
+            text += str(int(line[-1]))
             text += "\n"
         
     else:
@@ -247,13 +247,13 @@ def make_edges(edge_title, matrix, points_mapping=None):
             for j in range(1, len(points_mapping)):
                 other_point_index = points_mapping[j]
 
-                value = matrix[point_index][other_point_index]
+                value = int(matrix[point_index][other_point_index])
 
                 text += str(value) + " "
 
             other_point_index = points_mapping[len(points_mapping)]
 
-            value = matrix[point_index][other_point_index]
+            value = int(matrix[point_index][other_point_index])
             text += str(value) + " "
             text += "\n"
 

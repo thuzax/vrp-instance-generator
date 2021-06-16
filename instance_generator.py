@@ -87,8 +87,6 @@ if __name__=="__main__":
                     )
             )
 
-        exit(0)
-
         services_times = generation_manager.generate_services_times(
                                                 points
                                             )

@@ -20,6 +20,7 @@ def init_osrm_server():
     command += "--max-table-size=1000000" + " "
     command += "--ip=127.0.0.1" + " "
     command += "--port=6969" + " "
+    command += "--mmap"
 
     server_process = status_variables.osrm_server_process()
 

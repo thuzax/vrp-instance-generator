@@ -1,6 +1,6 @@
 {
-    "LAT_COLUMN_NAME" : "lat",
-    "LON_COLUMN_NAME" : "lon",
+    "LAT_COLUMN_NAME" : "LAT",
+    "LON_COLUMN_NAME" : "LON",
     "NUMBER_COLUMN_NAME" : "number",
     "STREET_COLUMN_NAME" : "street name",
     "MIN_LAT" : null,
@@ -13,7 +13,7 @@
     "BLOCK_POINT_REPETITION" : false,
     "BLOCK_NO_NUMBER" : false,
     "BLOCK_NO_STREET" : false,
-    "REACHING_FILTER" : true,
+    "REACHING_FILTER" : false,
     "DISTANCES_LOCALLY" : true,
     "GENERATE_TIME_WINDOWS" : true,
     "TIME_WINDOWS_HORIZON" : 540,
@@ -26,5 +26,6 @@
     "PER_NUMBER_URBAN_CENTERS" : 5,
     "MAX_URBAN_DISTANCE" : 0.03,
     "GENERATION_URB_RUR_METHOD" : "clustering",
-    "RANDOM_SEED" : 10
+    "RANDOM_SEED" : 10,
+    "PATHS_FILE" : "paths-br-sul.json"
 }
