@@ -9,7 +9,7 @@ import constraints
 def read_constraints_config_file():
     constraints_file_name = global_parameters.constraints_config()
 
-    constraints_to_generate = []
+    constraints_to_generate = {}
     with open(constraints_file_name, "r") as config_file:
         text = config_file.read()
         dict_cons_class = json.loads(text)
@@ -17,7 +17,7 @@ def read_constraints_config_file():
         for class_name, attributes in dict_cons_class.items():
             class_type = getattr(constraints, class_name)
             constraint_object = class_type()
-            constraints_to_generate.append(constraint_object)
+            constraints_to_generate[class_name] = constraint_object
 
             for attribute, value in attributes.items():
                 constraint_object.set_attribute(attribute, value)

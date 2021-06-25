@@ -33,27 +33,28 @@ class CouldNotReachTheRoutingServer(Exception):
 
         super().__init__(message)
 
-class MinServiceTimeGreaterThanMax(Exception):
-    def __init__(self):
+class MaxMustBeGreaterThanMin(Exception):
+    def __init__(self, min_parameter, max_parameter):
         message = ""
-        message += "The input param 'max_service_time' must be greater than "
-        message += "the 'max_service_time' input param."
+        message += "The parameter " + str(max_parameter) + "value "
+        message += "must be greater than the parameter "
+        message += str(min_parameter) 
 
         super().__init__(message)
 
-class MinServiceTimeCannotBeNoneNegative(Exception):
-    def __init__(self):
+class ValueCannotBeNoneNegative(Exception):
+    def __init__(self, parameter):
         message = ""
-        message += "The input param 'max_service_time'"
+        message += "The input parameter " + str(parameter)
         message += "must be greater or equal 0"
 
         super().__init__(message)
 
-class GreaterThanZeroMinAndMaxServicesTimes(Exception):
-    def __init__(self):
+class MinOrMaxGreaterThanZero(Exception):
+    def __init__(self, min_parameter, max_parameter):
         message = ""
-        message += "Service Time Constraint needs a "
-        message += "'min_service_time' or 'max_service_time'"
+        message += str(min_parameter) + " or "
+        message += str(max_parameter) + " value needs to be "
         message += "greater than 0"
 
         super().__init__(message)
@@ -63,5 +64,20 @@ class GreaterThanZeroParameter(Exception):
         message = ""
         message += "The variable " + name + " must have a value"
         message += "greater than 0"
+
+        super().__init__(message)
+
+class ParamMustBeSetted(Exception):
+    def __init__(self, name):
+        message = ""
+        message += "The parameter " + name + " must be setted"
+
+        super().__init__(message)
+
+class ObjectDoesNotHaveAttribute(Exception):
+    def __init__(self, class_name, attribute_name):
+        message = ""
+        message += "Object from class " + str(class_name) + " "
+        message += "does not have attribute " + str(attribute_name)
 
         super().__init__(message)

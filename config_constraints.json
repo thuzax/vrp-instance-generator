@@ -1,7 +1,33 @@
 {
-    "ServiceTimeConstraint": {
+    "ServiceTime": {
         "max_service_time": 5,
         "min_service_time": 5,
         "number_of_points": 10 
+    },
+    "PickupAndDelivery": {
+        "max_demand": 10,
+        "min_demand": 1,
+        "pair_by_route_per": 80,
+        "pair_by_radius_per": 50,
+        "radius_limiter": 8,
+        "pair_by_random_per": 10,
+        "forbid_randomize_points_lefts": false,
+        "allow_repetition": false
+    },
+    "TimeWindowsPD": {
+        "planning_horizon" : 540,
+        "time_windows_size" : 60,
+        "time_windows_size_max_variation" : 0
+    },
+    "UrbanRuralAptitude": {
+        "per_number_urban_centers" : 5,
+        "max_urban_distance" : 0.03,
+        "method" : "clustering"
+    },
+    "LimitedFleetUrbanRural": {
+        "correction_value" : 1.2
+    },
+    "HomogeneousCapacity": {
+        "capacity": 50
     }
 }
