@@ -1,8 +1,35 @@
 import argparse
 import json
+from importlib import import_module
 
 from src import global_parameters
 from src import exceptions
+import constraints
+
+def read_constraints_config_file():
+    constraints_file_name = global_parameters.constraints_config()
+
+    constraints_to_generate = {}
+    with open(constraints_file_name, "r") as config_file:
+        text = config_file.read()
+        dict_cons_class = json.loads(text)
+
+        for class_name, attributes in dict_cons_class.items():
+            class_type = getattr(constraints, class_name)
+            constraint_object = class_type()
+            constraints_to_generate[class_name] = constraint_object
+
+            for attribute, value in attributes.items():
+                constraint_object.set_attribute(attribute, value)
+
+    
+    global_parameters.set_parameter(
+                        "constraints_objects", 
+                        constraints_to_generate
+                    )
+
+
+
 
 
 def read_configuration_file():
@@ -20,13 +47,32 @@ def read_configuration_file():
         dict_config = json.loads(text)
 
         for key, value in dict_config.items():
+            key = key.lower()
             if (key == "config_file"):
                 continue
             
-            key = key.lower()
             global_parameters.set_parameter(key, value)
 
-    
+    check_parameters()
+
+
+def read_paths_file():
+    """Read the paths file which contains the path for external programs
+    """
+
+    paths_file_name = global_parameters.paths_file()
+
+    with open(paths_file_name, "r") as paths_file:
+        text = paths_file.read()
+        dict_paths = json.loads(text)
+
+        for key, value in dict_paths.items():
+            key = key.lower()
+
+            key += "_path"
+            global_parameters.set_parameter(key, value)
+
+
 def parse_command_line_arguments():
     """Manage the command line arguments
     """
@@ -235,10 +281,18 @@ def parse_command_line_arguments():
                                                 arguments["street_column_name"]
                                             )
 
+    # print(arguments)
+
+    for key, value in arguments.items():
+        global_parameters.set_parameter(key, value)
+    
+    check_parameters()
+
+def check_parameters():
     # If --use-number-column was not specified but arguments which depends
     # on it were, an exception is raised
-    if (arguments["number_column_name"] is None):
-        if (arguments["block_no_number"]):
+    if (global_parameters.number_column_name() is None):
+        if (global_parameters.block_no_number()):
             raise exceptions.ParamUsedButNoParamRequired(
                                 "--block-no-number", 
                                 "--use-number-column"
@@ -246,14 +300,10 @@ def parse_command_line_arguments():
 
     # If --use-street-name was not specified but arguments which depends
     # on it were, an exception is raised
-    if (arguments["number_column_name"] is None):
-        if (arguments["block_no_street"]):
+    if (global_parameters.number_column_name() is None):
+        if (global_parameters.block_no_street()):
             raise exceptions.ParamUsedButNoParamRequired(
                                 "--block-no-street", 
                                 "--use-street-name"
                             )
 
-    # print(arguments)
-
-    for key, value in arguments.items():
-        global_parameters.set_parameter(key, value)
