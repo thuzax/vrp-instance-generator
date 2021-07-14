@@ -2,10 +2,10 @@ import copy
 import os
 import random
 import subprocess
-import problems
+import src.problems
 
-from subproblems import SubProblem
-from problems import *
+from src.subproblems import SubProblem
+from src.problems import *
 from src import execution_log
 
 class CVRPFilo(SubProblem):

@@ -2,7 +2,7 @@ import numpy
 import random
 
 from src import exceptions
-from constraints.Constraint import Constraint
+from src.constraints.Constraint import Constraint
 
 class ServiceTime(Constraint):
     def __init__(self):

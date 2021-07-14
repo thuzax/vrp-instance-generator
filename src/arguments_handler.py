@@ -1,14 +1,14 @@
 import argparse
 import json
 
-import constraints
-import points_generation_managers
-import input_filters
-import problems
-import matrices_calculation
-import subproblems
+from src import constraints
+from src import points_generation_managers
+from src import input_filters
+from src import problems
+from src import matrices_calculation
+from src import subproblems
 
-from problems import *
+from src.problems import *
 
 
 def create_input_objects(dict_input):

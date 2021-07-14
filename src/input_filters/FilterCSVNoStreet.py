@@ -1,4 +1,4 @@
-from input_filters import Filter
+from src.input_filters import Filter
 
 class FilterCSVNoStreet(Filter):
     def __init__(self):

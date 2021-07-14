@@ -4,7 +4,7 @@ import numpy
 
 from src import exceptions
 
-from constraints.Constraint import Constraint
+from src.constraints.Constraint import Constraint
 
 
 class TimeWindowsPD(Constraint):

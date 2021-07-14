@@ -1,7 +1,7 @@
 import pandas
 
-import matrices_calculation
-from input_filters import Filter
+from src import matrices_calculation
+from src.input_filters import Filter
 
 class FilterCSVByReachingWithOSRM(Filter):
     def __init__(self):

@@ -10,7 +10,7 @@ from numpy.core.defchararray import center
 from sklearn.utils.extmath import density
 
 from src import exceptions
-from constraints.Constraint import Constraint
+from src.constraints.Constraint import Constraint
 
 class UrbanRuralAptitude(Constraint):
     def __init__(self):

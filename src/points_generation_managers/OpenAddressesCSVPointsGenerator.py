@@ -1,6 +1,6 @@
 import pandas
 
-from points_generation_managers import PointsGeneratorManager
+from src.points_generation_managers import PointsGeneratorManager
 
 
 class OpenAddressesCSVPointsGenerator(PointsGeneratorManager):

@@ -1,7 +1,7 @@
 import copy
 import json
 
-from problems.ProblemClass import ProblemClass
+from src.problems.ProblemClass import ProblemClass
 
 class PDPTWURA(ProblemClass):
 

@@ -4,7 +4,7 @@ import math
 import collections
 
 from src import exceptions
-from constraints.Constraint import Constraint
+from src.constraints.Constraint import Constraint
 
 class LimitedFleetUrbanRural(Constraint):
     def __init__(self):

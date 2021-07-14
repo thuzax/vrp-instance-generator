@@ -1,6 +1,6 @@
 import numpy
 import random
-from constraints.Constraint import Constraint
+from src.constraints.Constraint import Constraint
 
 from src import exceptions
 

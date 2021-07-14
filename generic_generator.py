@@ -3,12 +3,12 @@ import numpy
 import time
 
 from src import arguments_handler
-
 from src import execution_log
-from constraints import *
-from problems import *
-from points_generation_managers import *
-from matrices_calculation import *
+
+from src.constraints import *
+from src.problems import *
+from src.points_generation_managers import *
+from src.matrices_calculation import *
 
 
 def generate_points():

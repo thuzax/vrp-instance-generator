@@ -2,7 +2,7 @@ import numpy
 import copy
 import sklearn.metrics
 
-from matrices_calculation import DistancesAndTimesCalculator
+from src.matrices_calculation import DistancesAndTimesCalculator
 
 class DistancesAndTimesEuclidean(DistancesAndTimesCalculator):
     def __init__(self):

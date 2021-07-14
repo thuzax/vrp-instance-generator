@@ -9,7 +9,7 @@ import math
 from src import exceptions
 from src import execution_log
 
-from matrices_calculation import DistancesAndTimesCalculator
+from src.matrices_calculation import DistancesAndTimesCalculator
 
 class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
     # Acquired from configuration file

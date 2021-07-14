@@ -2,7 +2,7 @@ import copy
 import json
 from os import write
 
-from problems.ProblemClass import ProblemClass
+from src.problems.ProblemClass import ProblemClass
 
 class PDPTW(ProblemClass):
 
