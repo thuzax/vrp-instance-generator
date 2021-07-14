@@ -48,6 +48,7 @@ def init_osrm_server():
 
     execution_log.info_log("Done.")
 
+
 def finish_osrm_server():
     """Stop a osrm server if one exists
     """

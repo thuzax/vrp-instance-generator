@@ -39,7 +39,6 @@ class LimitedFleetUrbanRural(Constraint):
         }
 
     def generate_fleet_size(self):
-        print(self.cvrp_routes)
         fleet_size = math.ceil(
             len(self.cvrp_routes) 
             * self.correction_value

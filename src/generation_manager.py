@@ -8,7 +8,7 @@ import scipy.spatial
 import sklearn.cluster
 import matplotlib.pyplot
 from progress.bar import Bar
-from sklearn.externals.six import remove_move
+# from sklearn.externals.six import remove_move
 
 
 from src import global_parameters
@@ -385,10 +385,6 @@ def generate_pickups_and_deliveries(
             has_pd[pair[0]] = True
             has_pd[pair[1]] = True
 
-
-    # print(pickups_and_deliveries)
-    # print(has_pd)
-
     return pickups_and_deliveries
 
 
@@ -453,14 +449,6 @@ def remove_points_without_request(points, pickups_and_deliveries):
     pickups = set([i for i, j in pickups_and_deliveries])
     deliveries = set([j for i, j in pickups_and_deliveries])
 
-    # print(pickups, deliveries)
-
-
-    # for i, point in enumerate(points):
-    #     print(i, point)
-    
-    # print(pickups_and_deliveries)
-
     maintained_indices = []
     removed_indices = []
 
@@ -470,7 +458,6 @@ def remove_points_without_request(points, pickups_and_deliveries):
             continue
         maintained_indices.append(i)
 
-    # print(maintained_indices)
     points = [points[i] for i in maintained_indices]
 
     for i in removed_indices:
@@ -481,10 +468,6 @@ def remove_points_without_request(points, pickups_and_deliveries):
             if (delivery > i):
                 delivery -= 1
             pickups_and_deliveries[index] = (pickup, delivery)
-    
-    # for i, point in enumerate(points):
-    #     print(i, point)
-    # print(pickups_and_deliveries)
 
     return points, pickups_and_deliveries
     

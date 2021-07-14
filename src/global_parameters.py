@@ -167,10 +167,11 @@ def set_parameter(parameter_name, value):
     """
 
     if (parameter_name == "per_number_urban_centers"):
-        _dict_parameters["number_urban_centers"] = math.ceil(
-                                    (value * _dict_parameters["output_size"]) 
-                                    / 100
-                                )
+    #     _dict_parameters["number_urban_centers"] = math.ceil(
+    #                                 (value * _dict_parameters["output_size"]) 
+    #                                 / 100
+    #                             )
+        _dict_parameters["number_urban_centers"] = 0
         return
 
     if (parameter_name not in _dict_parameters.keys()):
@@ -182,15 +183,15 @@ def set_parameter(parameter_name, value):
     if (parameter_name in _float_parameters and value is not None):
         value = float(value)
 
-    if (parameter_name == "output_name"):
-        splitted_path = value.split("/")
-        name = splitted_path[-1]
-        name = name.split(".")[0]
+    # if (parameter_name == "output_name"):
+    #     splitted_path = value.split("/")
+    #     name = splitted_path[-1]
+    #     name = name.split(".")[0]
 
-        _dict_parameters["output_path"] = "/".join(splitted_path[:-1])
-        _dict_parameters["output_name"] = name
+        # _dict_parameters["output_path"] = "/".join(splitted_path[:-1])
+        # _dict_parameters["output_name"] = name
 
-        return
+        # return
 
     _dict_parameters[parameter_name] = value
 

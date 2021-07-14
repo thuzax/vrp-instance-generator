@@ -48,10 +48,10 @@ if __name__=="__main__":
     column_name = sys.argv[3]
     column_value = sys.argv[4]
 
-    print(input_name)
-    print(output_name)
-    print(column_name)
-    print(column_value)
+    print("INPUT FILE:", input_name)
+    print("OUTPUT FILE:", output_name)
+    print("FILTERED COLUMN:", column_name)
+    print("MANTAINED VALUE:", column_value)
 
 
     data_chunks = read_input_file(input_name)

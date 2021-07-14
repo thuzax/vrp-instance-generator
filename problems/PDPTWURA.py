@@ -1,34 +1,32 @@
 import copy
-import pprint
 import json
 
 from problems.ProblemClass import ProblemClass
 
 class PDPTWURA(ProblemClass):
+
+    # Non-obrigatory Items
+    time_matrix = None
+
+    cvrp_routes = None
+    capacity = None
+    pickups_and_deliveries = None
+    demands = None
+
+    services_times = None
+    time_windows_pd = None
+    planning_horizon = None
+    time_windows_size = None
+
+    urban_rural_aptitude = None
+    fleets_sizes = None
+    
     def __init__(self):
         super().__init__(
             "Pickup and Delivery Problem" +
             "with Time Windows" +
             "and Urban/Rural Aptitude"
         )
-
-        self.points = None
-        self.number_of_points = None
-        self.distance_matrix = None
-        self.time_matrix = None
-
-        self.cvrp_routes = None
-        self.capacity = None
-        self.pickups_and_deliveries = None
-        self.demands = None
-
-        self.services_times = None
-        self.time_windows_pd = None
-        self.planning_horizon = None
-        self.time_windows_size = None
-
-        self.urban_rural_aptitude = None
-        self.fleets_sizes = None
 
 
     def get_constraints_generation_order(self):
@@ -87,12 +85,13 @@ class PDPTWURA(ProblemClass):
 
         return dynamic_setting_dict
 
+
     def update_problem_class(self, constraint_dict):
         for attrbute, value in constraint_dict.items():
             self.set_attribute(attrbute, value)
 
 
-    def write_text_file(self, output_path, file_name):
+    def write_text_file(self):
         text = ""
         text += "NAME : " + str(self.name)
         text += "\n"
@@ -212,14 +211,14 @@ class PDPTWURA(ProblemClass):
         text += edges_time
         text += "EOF"
 
-        if (output_path[-1] != "/"):
-            output_path += "/"
+        if (self.output_path[-1] != "/"):
+            self.output_path += "/"
         
-        with open(output_path + file_name + ".pdptwura", "w") as output_file:
+        with open(self.output_path + self.output_name + ".pdptwura", "w") as output_file:
             output_file.write(text)
 
 
-    def write_json_file(self, output_path, file_name):
+    def write_json_file(self):
         output_dict = {}
 
         output_dict["points"] = copy.deepcopy(self.points)
@@ -270,8 +269,8 @@ class PDPTWURA(ProblemClass):
 
         output_dict["fleets_size"] = copy.deepcopy(self.fleets_sizes)
 
-        if (output_path[-1] != "/"):
-            output_path += "/"
+        if (self.output_path[-1] != "/"):
+            self.output_path += "/"
 
-        with open(output_path + file_name + ".json", "w") as output_file:
+        with open(self.output_path + self.output_name + ".json", "w") as output_file:
             output_file.write(json.dumps(output_dict))

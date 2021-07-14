@@ -1,6 +1,6 @@
 {
-    "LAT_COLUMN_NAME" : "lat",
-    "LON_COLUMN_NAME" : "lon",
+    "LAT_COLUMN_NAME" : "LAT",
+    "LON_COLUMN_NAME" : "LON",
     "NUMBER_COLUMN_NAME" : "number",
     "STREET_COLUMN_NAME" : "street name",
     "MIN_LAT" : null,
@@ -24,8 +24,8 @@
     "MAX_SERVICE_TIME" : 5,
     "GENERATE_URB_RUR_APTITUDE": true,
     "PER_NUMBER_URBAN_CENTERS" : 5,
-    "MAX_URBAN_DISTANCE" : 0.03,
-    "GENERATION_URB_RUR_METHOD" : "clustering",
+    "MAX_URBAN_DISTANCE" : 0.3,
+    "GENERATION_URB_RUR_METHOD" : "one_clustering",
     "RANDOM_SEED" : 10,
     "PATHS_FILE" : "paths-br-sudeste.json",
     "CONSTRAINTS_CONFIG": "config_constraints.json"

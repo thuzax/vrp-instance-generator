@@ -1,10 +1,13 @@
 import numpy
 import random
 import math
+import collections
 import scipy.spatial
 import sklearn.cluster
+import sklearn.metrics
 import matplotlib.pyplot
 from numpy.core.defchararray import center
+from sklearn.utils.extmath import density
 
 from src import exceptions
 from constraints.Constraint import Constraint
@@ -20,9 +23,26 @@ class UrbanRuralAptitude(Constraint):
         # must be setted dynamically
         self.points = None
 
+        # DBSCAN optional parameters and default values
+        self.density_clustering_per_distance = 0.1
+        self.density_per_min = 0.05
+
+
+        self.center_distances_methods = [
+            "clustering", 
+            "center_seeds", 
+            "one_clustering"
+        ]
+
+        self.density_methods = [
+            "dbscan",
+            "optics"
+        ]
+
     def generate_aptitude(self, number_urban_centers):
 
         distances_to_center = None
+        labels = None
 
         if (self.method == "clustering"):
             distances_to_center = (
@@ -33,13 +53,39 @@ class UrbanRuralAptitude(Constraint):
             distances_to_center = (
                 self.generate_aptitude_by_center_seeds(number_urban_centers)
             )
+        
+        if (self.method == "one_clustering"):
+            distances_to_center = (
+                self.generate_aptitude_by_one_clustering()
+            )
 
-        if (distances_to_center is None):
+        if (self.method == "dbscan"):
+            labels = (
+                self.generate_aptitude_by_DBSCAN_clustering()
+            )
+        
+        if (self.method == "optics"):
+            labels = (
+                self.generate_aptitude_by_OPTICS_clustering()
+            )
+        
+
+        # Min number 
+        if (
+            self.method in self.center_distances_methods
+            and distances_to_center is None
+        ):
             return None
 
-        points_classif = (
-            self.classify_using_distances_to_center(distances_to_center)
-        )
+        if (self.method in self.center_distances_methods):
+            points_classif = (
+                self.classify_using_distances_to_center(distances_to_center)
+            )
+
+        if (self.method in self.density_methods):
+            points_classif = (
+                self.classify_using_density(self.points, labels)
+            )
 
         for i, point in enumerate(self.points):
             if (points_classif[i] == "u"):
@@ -55,7 +101,7 @@ class UrbanRuralAptitude(Constraint):
                     color="red"
                 )
 
-        # matplotlib.pyplot.show()
+        matplotlib.pyplot.show()
         # output_path = global_parameters.output_path()
         # output_name = global_parameters.output_name()
 
@@ -66,6 +112,107 @@ class UrbanRuralAptitude(Constraint):
         # matplotlib.pyplot.savefig(fig_name)
 
         return points_classif
+
+
+    def generate_aptitude_by_DBSCAN_clustering(self):
+        points_arr = numpy.array(self.points)
+
+        max_lat_lon = numpy.max(points_arr, axis=0)
+        max_lat = max_lat_lon[0]
+        max_lon = max_lat_lon[1]
+
+        min_lat_lon = numpy.min(points_arr, axis=0)
+        min_lat = min_lat_lon[0]
+        min_lon = min_lat_lon[1]
+
+
+        axis_x_size = abs(max_lat - min_lat)
+        axis_y_size = abs(max_lon - min_lon)
+
+        min_axis = min(axis_x_size, axis_y_size)
+        min_distance_dbscan = min_axis * self.density_clustering_per_distance
+
+        dbscan = sklearn.cluster.DBSCAN(
+            eps=min_distance_dbscan,
+            metric="haversine",
+            min_samples=2
+        )
+
+        dbscan.fit(points_arr)
+
+        labels = []
+        for i in range(len(dbscan.labels_)):
+            if (dbscan.labels_[i] == -1):
+                labels.append("unlabeld")
+            else:
+                labels.append(int(dbscan.labels_[i]))
+
+        return labels
+
+    def generate_aptitude_by_OPTICS_clustering(self):
+        points_arr = numpy.array(self.points)
+
+        max_lat_lon = numpy.max(points_arr, axis=0)
+        max_lat = max_lat_lon[0]
+        max_lon = max_lat_lon[1]
+
+        min_lat_lon = numpy.min(points_arr, axis=0)
+        min_lat = min_lat_lon[0]
+        min_lon = min_lat_lon[1]
+
+
+        axis_x_size = abs(max_lat - min_lat)
+        axis_y_size = abs(max_lon - min_lon)
+
+        min_axis = min(axis_x_size, axis_y_size)
+        min_distance_optics = min_axis * self.density_clustering_per_distance
+
+        optics = sklearn.cluster.OPTICS(
+            eps=min_distance_optics,
+            metric="haversine",
+            cluster_method="dbscan",
+            min_samples=2
+        )
+
+        optics.fit(points_arr)
+
+        labels = []
+        for i in range(len(optics.labels_)):
+            if (optics.labels_[i] == -1):
+                labels.append("unlabeld")
+            else:
+                labels.append(int(optics.labels_[i]))
+
+        return labels
+
+
+    def generate_aptitude_by_one_clustering(self):
+        points_arr = numpy.array(self.points)
+
+        kmeans = sklearn.cluster.KMeans(n_clusters=1)
+        kmeans.fit(points_arr)
+        
+        matplotlib.pyplot.scatter(
+            kmeans.cluster_centers_[:,0],
+            kmeans.cluster_centers_[:,1],
+            color="black"
+        )
+        for x,y in kmeans.cluster_centers_:
+            matplotlib.pyplot.annotate(
+                "center",
+                (x,y),
+                textcoords="offset points",
+                xytext=(0,10),
+                ha="center"
+            )
+
+        distances_to_center = scipy.spatial.distance.cdist(
+                        points_arr,
+                        kmeans.cluster_centers_,
+                        metric="euclidean"
+                    )
+
+        return distances_to_center
 
 
     def generate_aptitude_by_clustering(self, number_of_clusters):
@@ -178,6 +325,30 @@ class UrbanRuralAptitude(Constraint):
             urb_rur_points.append("u")
 
         return urb_rur_points
+
+
+    def classify_using_density(self, points, labels):
+        dict_label_num_points = dict(collections.Counter(labels))
+
+        densities = {}
+        for key, value in dict_label_num_points.items():
+            densities[key] = float(value) / float(len(labels))
+
+        urb_rur_points = []
+
+        for index in range(len(points)):
+            label = labels[index]
+            if (
+                label == "unlabeld"
+                or densities[label] < self.density_per_min
+            ):
+                urb_rur_points.append("r")
+            else:
+                urb_rur_points.append("u")
+
+        return urb_rur_points
+
+
 
 
     def get_constraint(self):

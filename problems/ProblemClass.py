@@ -4,8 +4,33 @@ from src import exceptions
 
 
 class ProblemClass(ABC):
+    
+    instance = None
+    
+    # Obrigatory for all Porblems
+    points = None
+    number_of_points = None
+    distance_matrix = None
+
+    output_path = None
+    output_name = None
+    output_type = "text"
+
+
+    def __new__(cls, *args, **kwargs):
+        for subcls in cls.__subclasses__():
+            if (subcls.instance is not None):
+                return subcls.instance
+        
+        if (cls.instance is None):
+            cls.instance = super(ProblemClass, cls).__new__(
+                cls, *args, **kwargs
+            )
+        
+        return cls.instance
 
     def __init__(self, problem_class_name):
+    
         self.name = problem_class_name
 
     def set_attribute(self, name, value):
@@ -64,10 +89,19 @@ class ProblemClass(ABC):
 
 
     @abstractmethod
-    def write_text_file(self, output_path, file_name):
+    def write_text_file(self):
         pass
     
 
     @abstractmethod
-    def write_json_file(self, output_path, file_name):
+    def write_json_file(self):
         pass
+
+
+    def write_file(self):
+        if (self.output_type == "text"):
+            self.write_text_file()
+            return
+        if (self.output_type == "json"):
+            self.write_json_file()
+            return

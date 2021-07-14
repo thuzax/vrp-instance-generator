@@ -2,33 +2,96 @@ import argparse
 import json
 from importlib import import_module
 
+import constraints
+import points_generation_managers
+import input_filters
+import problems
+
 from src import global_parameters
 from src import exceptions
-import constraints
 
-def read_constraints_config_file():
-    constraints_file_name = global_parameters.constraints_config()
 
-    constraints_to_generate = {}
-    with open(constraints_file_name, "r") as config_file:
-        text = config_file.read()
-        dict_cons_class = json.loads(text)
+def create_input_objects(dict_input):
+    problem_class_dict = dict_input["problem_class"]
+    problem_class_name = list(problem_class_dict.keys())[0]
+    
+    problem_class_type = getattr(
+        problems, 
+        problem_class_name
+    )
 
-        for class_name, attributes in dict_cons_class.items():
-            class_type = getattr(constraints, class_name)
-            constraint_object = class_type()
-            constraints_to_generate[class_name] = constraint_object
+    problem_class = problem_class_type()
+
+    for attribute, value in problem_class_dict[problem_class_name].items():
+        problem_class.set_attribute(attribute, value)
+
+    points_generator_dict = dict_input["points_generator"]
+
+    points_gen_name = list(points_generator_dict.keys())[0]
+
+    points_generator_type = getattr(
+        points_generation_managers, 
+        points_gen_name
+    )
+
+    points_generator = points_generator_type()
+
+    for attribute, value in points_generator_dict[points_gen_name].items():
+        points_generator.set_attribute(attribute, value)
+
+
+    filters_dict = dict_input.get("filters")
+
+    filters_list = []
+
+    if (filters_dict is not None):
+        for filter_class_name, attributes in filters_dict.items():
+            filter_class_type = getattr(input_filters, filter_class_name)
+            filter_object = filter_class_type()
+            filters_list.append(filter_object)
 
             for attribute, value in attributes.items():
-                constraint_object.set_attribute(attribute, value)
+                filter_object.set_attribute(attribute, value)
+        
+        points_generator.set_attribute("filters", filters_list)
 
+    else:
+        points_generator.set_attribute("filters", [])
+
+
+
+def create_constraints_objects(dict_cons_class):
+    constraints_to_generate = {}
+    for class_name, attributes in dict_cons_class.items():
+        class_type = getattr(constraints, class_name)
+        constraint_object = class_type()
+        constraints_to_generate[class_name] = constraint_object
+
+        for attribute, value in attributes.items():
+            constraint_object.set_attribute(attribute, value)
+    
+    return constraints_to_generate
+
+
+def read_configurations():
+    constraints_file_name = global_parameters.constraints_config()
+
+    with open(constraints_file_name, "r") as config_file:
+        text = config_file.read()
+        dict_data = json.loads(text)
+
+        dict_input = dict_data["input"]
+        create_input_objects(dict_input)
+
+
+        dict_cons_class = dict_data["constraints"]
+        constraints_to_generate = create_constraints_objects(dict_cons_class)
+        
     
     global_parameters.set_parameter(
                         "constraints_objects", 
                         constraints_to_generate
                     )
-
-
 
 
 
@@ -85,7 +148,7 @@ def parse_command_line_arguments():
         help="name of the input CSV file",
         action="store", 
         default=None,
-        required=True
+        required=False
     )
 
     # Name of output file
@@ -95,7 +158,7 @@ def parse_command_line_arguments():
         help="name of the CSV output file",
         action="store",
         default=None,
-        required=True
+        required=False
     )
 
 
@@ -106,7 +169,7 @@ def parse_command_line_arguments():
         help="desired number of elements in the CSV output file",
         action="store",
         default=None,
-        required=True
+        required=False
     )
 
 

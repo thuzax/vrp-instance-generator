@@ -2,6 +2,7 @@ import random
 import numpy
 import pprint
 import copy
+import points_generation_managers
 
 from src import global_parameters
 from src import arguments_handler
@@ -12,13 +13,36 @@ from src import generation_manager
 from src import vrp_files_manager
 from src import osrm_manager
 from src import filo_manager
-from problems import ProblemInstance
 
 from constraints import *
 
+from problems import *
+from points_generation_managers import *
+
+
+
+def generate_points():
+    points_generator_manager = PointsGeneratorManager()
+    problem_class = ProblemClass()
+    
+    points_generator_manager.read_file()
+    
+    points = points_generator_manager.select_points(
+        problem_class.number_of_points
+    )
+
+    points_generator_manager.write_selected_items(
+        problem_class.output_path, 
+        problem_class.output_name
+    )
+
+    problem_class.set_attribute("points", points)
+    problem_class.set_attribute("number_of_points", len(points))
+
+
 
 def generate_constraints(constraints_objects):
-    problem_class = ProblemInstance.Instance()
+    problem_class = ProblemClass()
     generation_order = problem_class.get_constraints_generation_order()
 
     for constraint_class in generation_order:
@@ -33,18 +57,19 @@ def generate_constraints(constraints_objects):
                 attribute,
                 value
             )
+
         
         constraint_dict = constraint_object.get_constraint()
         problem_class.update_problem_class(constraint_dict)
 
 
 if __name__ == "__main__":
-    problem_class = ProblemInstance.Instance()
     global_parameters.init()
     arguments_handler.parse_command_line_arguments()
     arguments_handler.read_configuration_file()
     arguments_handler.read_paths_file()
-    arguments_handler.read_constraints_config_file()
+    arguments_handler.read_configurations()
+
 
     random.seed(global_parameters.random_seed())
     numpy.random.seed(global_parameters.random_seed())
@@ -55,49 +80,34 @@ if __name__ == "__main__":
         status_variables.init()
 
         osrm_manager.init_osrm_server()
-        
 
-        # read input
-        data = csv_manager.read_input_file()
-        
-        # filter data
-        data = filter_csv.filter_data(data)
+        generate_points()
 
-        # # choose the random address/points
-        data = generation_manager.draw_instance_elements(data)
-
-        points = csv_manager.get_points_coordinates(data)
-        
-        problem_class.set_attribute("points", points)
-        problem_class.set_attribute("number_of_points", len(points))
-
-        output_path = global_parameters.output_path()
-        output_name = global_parameters.output_name()
-        output_size = global_parameters.output_size()
-
-        # write data in csv file
-        csv_manager.write_output_file(data, output_path + "/" + output_name)
-
+        problem_class = ProblemClass()
         distance_matrix, time_matrix = generation_manager.calculate_matrices(
-                                                            points
-                                                        )
+            problem_class.points
+        )
+
         problem_class.set_attribute("distance_matrix", distance_matrix)
         problem_class.set_attribute("time_matrix", time_matrix)
 
         cvrp_capacity = generation_manager.generate_cvrp_capacity()
-        cvrp_demands = generation_manager.generate_cvrp_demands(output_size)
+        cvrp_demands = generation_manager.generate_cvrp_demands(
+            problem_class.number_of_points
+        )
 
-        cvrp_file_name = output_path + "/" + "cvrp_" + output_name + ".vrp"
+        cvrp_file_name = problem_class.output_path + "/" + "cvrp_" 
+        cvrp_file_name += problem_class.output_name + ".vrp"
         
         vrp_files_manager.write_cvrp_file(
                             cvrp_file_name,
-                            output_size, 
+                            problem_class.number_of_points, 
                             cvrp_capacity, 
-                            points, 
+                            problem_class.points, 
                             cvrp_demands
                         )
 
-        filo_manager.run_filo(cvrp_file_name, output_path)
+        filo_manager.run_filo(cvrp_file_name, problem_class.output_path)
 
         routes = vrp_files_manager.read_cvrp_solution_routes(cvrp_file_name)
 
@@ -107,9 +117,8 @@ if __name__ == "__main__":
 
         generate_constraints(constraints_objects)
 
-        problem_class.write_text_file(output_path, "teste")
+        problem_class.write_file()
 
-        # pprint.pprint(problem_class.__dict__, indent=2)
 
 
     except Exception as e:

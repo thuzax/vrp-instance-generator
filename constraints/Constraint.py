@@ -16,6 +16,6 @@ class Constraint(ABC):
 
     def set_attribute(self, name, value):
         if (not hasattr(self, name)):
-            raise exceptions.ObjectDoesNotHaveAttribute("ProblemClass", name)
+            raise exceptions.ObjectDoesNotHaveAttribute("Constraint", name)
         self.__setattr__(name, value)
 
