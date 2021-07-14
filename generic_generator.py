@@ -1,14 +1,9 @@
 import random
 import numpy
-import pprint
-import copy
-import points_generation_managers
+import matrices_calculation
 
 from src import global_parameters
 from src import arguments_handler
-from src import status_variables
-from src import csv_manager
-from src import filter_csv
 from src import generation_manager
 from src import vrp_files_manager
 from src import osrm_manager
@@ -18,7 +13,7 @@ from constraints import *
 
 from problems import *
 from points_generation_managers import *
-
+from matrices_calculation import *
 
 
 def generate_points():
@@ -40,9 +35,26 @@ def generate_points():
     problem_class.set_attribute("number_of_points", len(points))
 
 
+def calculate_distances():
+    matrices_calculator = DistancesAndTimesCalculator()
 
-def generate_constraints(constraints_objects):
     problem_class = ProblemClass()
+
+    matrices_calculator.set_attribute("points", problem_class.points)
+
+    distance_matrix, time_matrix = (
+        matrices_calculator.calculate_distances_and_times()
+    )
+
+    problem_class.set_attribute("distance_matrix", distance_matrix)
+    problem_class.set_attribute("time_matrix", time_matrix)
+
+
+
+def generate_constraints():
+    problem_class = ProblemClass()
+    
+    constraints_objects = problem_class.constraints_objects
     generation_order = problem_class.get_constraints_generation_order()
 
     for constraint_class in generation_order:
@@ -77,19 +89,9 @@ if __name__ == "__main__":
     exception = None
 
     try:
-        status_variables.init()
-
-        osrm_manager.init_osrm_server()
-
         generate_points()
-
+        calculate_distances()
         problem_class = ProblemClass()
-        distance_matrix, time_matrix = generation_manager.calculate_matrices(
-            problem_class.points
-        )
-
-        problem_class.set_attribute("distance_matrix", distance_matrix)
-        problem_class.set_attribute("time_matrix", time_matrix)
 
         cvrp_capacity = generation_manager.generate_cvrp_capacity()
         cvrp_demands = generation_manager.generate_cvrp_demands(
@@ -113,9 +115,7 @@ if __name__ == "__main__":
 
         problem_class.set_attribute("cvrp_routes", routes)
 
-        constraints_objects = global_parameters.constraints_objects()
-
-        generate_constraints(constraints_objects)
+        generate_constraints()
 
         problem_class.write_file()
 
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     except Exception as e:
         exception = e
     finally:
-        osrm_manager.finish_osrm_server()
+        DistancesAndTimesCalculator().__del__()
 
         if (exception is not None):
             raise exception

@@ -37,9 +37,8 @@ class OpenAddressesCSVPointsGenerator(PointsGeneratorManager):
 
         if (len(self.data) < number_of_points):
             self.selected_items = self.data
-            return self.get_points_coordinates()
-
-        self.selected_items = self.data.sample(n=number_of_points)
+        else:
+            self.selected_items = self.data.sample(n=number_of_points)
 
         return self.get_points_coordinates(data_sample=self.selected_items)
 
@@ -100,5 +99,3 @@ class OpenAddressesCSVPointsGenerator(PointsGeneratorManager):
         """Write the data in a CSV file
         """
         self.selected_items.to_csv(output, index=False)
-
-

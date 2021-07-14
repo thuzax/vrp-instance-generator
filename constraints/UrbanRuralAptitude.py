@@ -19,6 +19,10 @@ class UrbanRuralAptitude(Constraint):
         self.per_number_urban_centers = None
         self.max_urban_distance = None
         self.method = None
+        self.save_figure = False
+        self.show_figure = False
+        self.figure_path = None
+        self.figure_name = None
 
         # must be setted dynamically
         self.points = None
@@ -38,6 +42,8 @@ class UrbanRuralAptitude(Constraint):
             "dbscan",
             "optics"
         ]
+
+
 
     def generate_aptitude(self, number_urban_centers):
 
@@ -101,15 +107,19 @@ class UrbanRuralAptitude(Constraint):
                     color="red"
                 )
 
-        matplotlib.pyplot.show()
-        # output_path = global_parameters.output_path()
-        # output_name = global_parameters.output_name()
+        if (self.show_figure):
+            matplotlib.pyplot.show()
+        
+        if (self.save_figure):
 
-        # matplotlib.pyplot.gca().set_aspect('equal', adjustable='box')
-        # matplotlib.pyplot.xticks(rotation=-15)
+            matplotlib.pyplot.gca().set_aspect('equal', adjustable='box')
+            matplotlib.pyplot.xticks(rotation=-15)
 
-        # fig_name = output_path + "/" + "fig_" + output_name + ".png"
-        # matplotlib.pyplot.savefig(fig_name)
+            if (self.figure_path[-1] != "/"):
+                self.figure_path = self.figure_path + "/"
+
+            fig_name = self.figure_path + "fig_" + self.figure_name + ".png"
+            matplotlib.pyplot.savefig(fig_name)
 
         return points_classif
 
@@ -130,7 +140,13 @@ class UrbanRuralAptitude(Constraint):
         axis_y_size = abs(max_lon - min_lon)
 
         min_axis = min(axis_x_size, axis_y_size)
-        min_distance_dbscan = min_axis * self.density_clustering_per_distance
+        min_distance_dbscan = abs(
+            min_axis 
+            * self.density_clustering_per_distance
+        )
+
+        if (min_distance_dbscan <= 0):
+            min_distance_dbscan = 0.01
 
         dbscan = sklearn.cluster.DBSCAN(
             eps=min_distance_dbscan,

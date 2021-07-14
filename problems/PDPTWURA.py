@@ -6,8 +6,6 @@ from problems.ProblemClass import ProblemClass
 class PDPTWURA(ProblemClass):
 
     # Non-obrigatory Items
-    time_matrix = None
-
     cvrp_routes = None
     capacity = None
     pickups_and_deliveries = None
@@ -73,6 +71,14 @@ class PDPTWURA(ProblemClass):
         if (constraint_class == "UrbanRuralAptitude"):
             dynamic_setting_dict["points"] = (
                 copy.deepcopy(self.points)
+            )
+
+            dynamic_setting_dict["figure_path"] = (
+                self.output_path
+            )
+
+            dynamic_setting_dict["figure_name"] = (
+                self.output_name
             )
 
         if (constraint_class == "LimitedFleetUrbanRural"):
@@ -242,23 +248,21 @@ class PDPTWURA(ProblemClass):
         )
 
         output_dict["pickups_and_deliveries"] = [
-            [x,y] for x, y in output_dict["pickups_and_deliveries"]
+            [int(x), int(y)] for x, y in output_dict["pickups_and_deliveries"]
         ]
         
-        output_dict["demands"] = copy.deepcopy(
-            self.demands
-        )
-
-        output_dict["demands"] = self.demands
+        output_dict["demands"] = {}
+        for key, value in self.demands.items():
+            output_dict["demands"][int(key)] = int(value)
+            
 
         output_dict["services_times"] = copy.deepcopy(self.services_times)
-        
         output_dict["services_times"] = self.services_times.tolist()
 
         time_windows_dict = {}
         for pair, tws in self.time_windows_pd.items():
-            time_windows_dict[pair[0]] = [tws[0][0], tws[0][1]]
-            time_windows_dict[pair[1]] = [tws[1][0], tws[1][1]]
+            time_windows_dict[int(pair[0])] = [tws[0][0], tws[0][1]]
+            time_windows_dict[int(pair[1])] = [tws[1][0], tws[1][1]]
         
         output_dict["time_windows_pd"] = time_windows_dict
 
@@ -274,3 +278,4 @@ class PDPTWURA(ProblemClass):
 
         with open(self.output_path + self.output_name + ".json", "w") as output_file:
             output_file.write(json.dumps(output_dict))
+            

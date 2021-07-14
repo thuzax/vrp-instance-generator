@@ -1,49 +1,44 @@
 import argparse
 import json
 from importlib import import_module
+from problems.ProblemClass import ProblemClass
 
 import constraints
 import points_generation_managers
 import input_filters
 import problems
+import matrices_calculation
 
 from src import global_parameters
 from src import exceptions
 
 
 def create_input_objects(dict_input):
+
     problem_class_dict = dict_input["problem_class"]
     problem_class_name = list(problem_class_dict.keys())[0]
-    
     problem_class_type = getattr(
         problems, 
         problem_class_name
     )
-
     problem_class = problem_class_type()
-
     for attribute, value in problem_class_dict[problem_class_name].items():
         problem_class.set_attribute(attribute, value)
 
+
     points_generator_dict = dict_input["points_generator"]
-
     points_gen_name = list(points_generator_dict.keys())[0]
-
     points_generator_type = getattr(
         points_generation_managers, 
         points_gen_name
     )
-
     points_generator = points_generator_type()
-
     for attribute, value in points_generator_dict[points_gen_name].items():
         points_generator.set_attribute(attribute, value)
 
 
     filters_dict = dict_input.get("filters")
-
     filters_list = []
-
     if (filters_dict is not None):
         for filter_class_name, attributes in filters_dict.items():
             filter_class_type = getattr(input_filters, filter_class_name)
@@ -52,11 +47,29 @@ def create_input_objects(dict_input):
 
             for attribute, value in attributes.items():
                 filter_object.set_attribute(attribute, value)
-        
         points_generator.set_attribute("filters", filters_list)
-
     else:
         points_generator.set_attribute("filters", [])
+
+
+def create_matrices_calculator(dict_mat_calculations):
+
+    matrices_calculator_name = list(dict_mat_calculations.keys())[0]
+    matrices_calculator_dict = dict_mat_calculations[matrices_calculator_name]
+    matrices_calculator_type = getattr(
+        matrices_calculation,
+        matrices_calculator_name
+    )
+
+    matrices_calculator_class = matrices_calculator_type()
+    for attribute, value in matrices_calculator_dict.items():
+        matrices_calculator_class.set_attribute(attribute, value)
+
+    problem_class = ProblemClass()
+    matrices_calculator_class.set_log_file(
+        problem_class.output_path,
+        problem_class.output_name
+    )
 
 
 
@@ -70,7 +83,9 @@ def create_constraints_objects(dict_cons_class):
         for attribute, value in attributes.items():
             constraint_object.set_attribute(attribute, value)
     
-    return constraints_to_generate
+    problem_class = ProblemClass()
+    problem_class.set_attribute("constraints_objects", constraints_to_generate)
+
 
 
 def read_configurations():
@@ -82,16 +97,11 @@ def read_configurations():
 
         dict_input = dict_data["input"]
         create_input_objects(dict_input)
-
+        dict_matrices_calculations = dict_data["matrices_calculations"]
+        create_matrices_calculator(dict_matrices_calculations)
 
         dict_cons_class = dict_data["constraints"]
-        constraints_to_generate = create_constraints_objects(dict_cons_class)
-        
-    
-    global_parameters.set_parameter(
-                        "constraints_objects", 
-                        constraints_to_generate
-                    )
+        create_constraints_objects(dict_cons_class)
 
 
 

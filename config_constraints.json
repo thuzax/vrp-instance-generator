@@ -1,41 +1,39 @@
 {
     "input" : {
-        "problem_class" : {
-            "PDPTW" : {
-                "number_of_points" : 20,
-                "output_path" : "./test_instances/results",
-                "output_name" : "br-mg-lavras",
-                "output_type" : "json"
-            }
-        },
-            
-        "filters" : {
-            "FilterCSVBy2DCoordenates": {
-                "first_coordenate_name" : "LAT",
-                "second_coordenate_name" : "LON",
-                "min_first_coordinate" : null,
-                "max_first_coordinate" : null,
-                "min_second_coordinate" : null,
-                "max_second_coordinate" : null
-            },
-            "FilterCSVNoNumbered" : {
-                "number_key_name" : "NUMBER"
-            },
-            "FilterCSVNoStreet" : {
-                "street_key_name" : "STREET"
-            }
-        },
-
         "points_generator" : {
             "OpenAddressesCSVPointsGenerator" : {
                 "input_path" : "./test_instances/br-mg/",
                 "input_name" : "br-mg-lavras",
                 "first_coordenate_name" : "LAT",
                 "second_coordenate_name" : "LON",
-                "allow_repetition" : false
+                "allow_repetition" : true
             }
+        },
+        "problem_class" : {
+            "PDPTWURA" : {
+                "number_of_points" : 20,
+                "output_path" : "./test_instances/results",
+                "output_name" : "br-mg-lavras",
+                "output_type" : "text"
+            }
+        },
+        "filters" : {
         }
+    },
 
+    "matrices_calculations" : {
+        "DistancesAndTimesOSRM" : {
+            "distances_locally" : true,
+            "osrm_routed_command_location" : "~/osrm/osrm-backend/build/osrm-routed",
+            "osrm_regions_map_files" : {
+                "br-centro-oeste" : "~/osrm/osrm-backend/mapas/brazil/centro-oeste/centro-oeste-latest.osrm",
+                "br-nordeste" : "~/osrm/osrm-backend/mapas/brazil/nordeste/nordeste-latest.osrm",
+                "br-norte" : "~/osrm/osrm-backend/mapas/brazil/norte/norte-latest.osrm",
+                "br-sudeste" : "~/osrm/osrm-backend/mapas/brazil/sudeste/sudeste-latest.osrm",
+                "br-sul" : "~/osrm/osrm-backend/mapas/brazil/sul/sul-latest.osrm"
+            },
+            "osrm_instance_region" : "br-sudeste"
+        }
     },
 
     "constraints" : {
@@ -64,7 +62,9 @@
             "max_urban_distance" : 0.1,
             "method" : "dbscan",
             "density_clustering_per_distance" : 0.1,
-            "density_per_min" : 0.05
+            "density_per_min" : 0.05,
+            "save_figure" : true,
+            "show_figure" : false
         },
         "LimitedFleetUrbanRural": {
             "correction_value" : 1.2

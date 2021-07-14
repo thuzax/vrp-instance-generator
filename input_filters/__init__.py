@@ -1,12 +1,12 @@
 from .Filter import *
-from .FilterCSVByReaching import *
+from .FilterCSVByReachingWithOSRM import *
 from .FilterCSVBy2DCoordenates import *
 from .FilterCSVNoNumbered import *
 from .FilterCSVNoStreet import *
 
 __all__ = [
     "Filter",
-    "FilterCSVByReaching",
+    "FilterCSVByReachingWithOSRM",
     "FilterCSVBy2DCoordenates",
     "FilterCSVNoNumbered",
     "FilterCSVNoStreet"

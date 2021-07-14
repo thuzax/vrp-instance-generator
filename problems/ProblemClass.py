@@ -7,14 +7,20 @@ class ProblemClass(ABC):
     
     instance = None
     
-    # Obrigatory for all Porblems
-    points = None
+    ### Obrigatory for all Porblems ###
+    
+    # Acquired from configuration file
     number_of_points = None
-    distance_matrix = None
-
+    constraints_objects = None
     output_path = None
     output_name = None
     output_type = "text"
+    
+    # Acquired while running
+    points = None
+    distance_matrix = None
+    time_matrix = None
+
 
 
     def __new__(cls, *args, **kwargs):
@@ -30,12 +36,16 @@ class ProblemClass(ABC):
         return cls.instance
 
     def __init__(self, problem_class_name):
-    
         self.name = problem_class_name
+
 
     def set_attribute(self, name, value):
         if (not hasattr(self, name)):
-            raise exceptions.ObjectDoesNotHaveAttribute("ProblemClass", name)
+            raise exceptions.ObjectDoesNotHaveAttribute(
+                self.__class__.__name__, 
+                name
+            )
+        
         self.__setattr__(name, value)
 
 
@@ -71,7 +81,16 @@ class ProblemClass(ABC):
 
 
         return text
-    
+
+
+    def write_file(self):
+        if (self.output_type == "text"):
+            self.write_text_file()
+            return
+        if (self.output_type == "json"):
+            self.write_json_file()
+            return
+
 
     @abstractmethod
     def get_constraints_generation_order(self):
@@ -97,11 +116,3 @@ class ProblemClass(ABC):
     def write_json_file(self):
         pass
 
-
-    def write_file(self):
-        if (self.output_type == "text"):
-            self.write_text_file()
-            return
-        if (self.output_type == "json"):
-            self.write_json_file()
-            return

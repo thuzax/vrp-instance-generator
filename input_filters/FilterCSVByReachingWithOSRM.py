@@ -1,8 +1,9 @@
 import pandas
+
+import matrices_calculation
 from input_filters import Filter
 
-
-class FilterCSVByReaching(Filter):
+class FilterCSVByReachingWithOSRM(Filter):
     def __init__(self):
         super().__init__("Filter by Reaching")
 
@@ -12,9 +13,9 @@ class FilterCSVByReaching(Filter):
     def apply_filter(self, data):
         removed_set = pandas.DataFrame(columns=data.columns)
 
+        osrm_dist_and_time_calc = matrices_calculation.DistancesAndTimesOSRM()
 
         for ind, row in data.iterrows():
-
             random_ind = data.sample(n=1).index
             while(ind == random_ind):
                 random_ind = data.sample(n=1).index
@@ -31,15 +32,16 @@ class FilterCSVByReaching(Filter):
                 float(random_row[self.second_coordenate_name])
             )
 
-            # distance, time = calculate_distances.request_dist_and_time(
-            #                                             point_x, 
-            #                                             point_y
-            #                                         )
+            distance, time = osrm_dist_and_time_calc.request_dist_and_time(
+                                                        point_x, 
+                                                        point_y
+                                                    )
 
-            # if ((distance is None) or (data is None)):
-            #     removed_set = removed_set.append(row)
+            if ((distance is None) or (time is None)):
+                print(ind)
+                removed_set = removed_set.append(row)
 
 
-        # data = data.drop(removed_set.index)
+        data = data.drop(removed_set.index)
         return data
 
