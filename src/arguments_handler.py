@@ -9,46 +9,66 @@ from src import matrices_calculation
 from src import subproblems
 
 from src.problems import *
+from src.points_generation_managers import *
 
 
-def create_input_objects(dict_input):
-
-    problem_class_dict = dict_input["problem_class"]
+def create_problem_class(problem_class_dict):
     problem_class_name = list(problem_class_dict.keys())[0]
+    
     problem_class_type = getattr(
         problems, 
         problem_class_name
     )
+
     problem_class = problem_class_type()
     for attribute, value in problem_class_dict[problem_class_name].items():
         problem_class.set_attribute(attribute, value)
 
 
-    points_generator_dict = dict_input["points_generator"]
+def create_points_generator(points_generator_dict):
     points_gen_name = list(points_generator_dict.keys())[0]
+    
     points_generator_type = getattr(
         points_generation_managers, 
         points_gen_name
     )
+
     points_generator = points_generator_type()
     for attribute, value in points_generator_dict[points_gen_name].items():
         points_generator.set_attribute(attribute, value)
 
 
-    filters_dict = dict_input.get("filters")
+def create_filters(filters_dict):
     filters_list = []
-    if (filters_dict is not None):
-        for filter_class_name, attributes in filters_dict.items():
-            filter_class_type = getattr(input_filters, filter_class_name)
-            filter_object = filter_class_type()
-            filters_list.append(filter_object)
+    points_generator = PointsGeneratorManager()
 
-            for attribute, value in attributes.items():
-                filter_object.set_attribute(attribute, value)
-        points_generator.set_attribute("filters", filters_list)
-    else:
+    if (filters_dict is None):
         points_generator.set_attribute("filters", [])
+        return
+    
+    for filter_class_name, attributes in filters_dict.items():
+        filter_class_type = getattr(input_filters, filter_class_name)
+        filter_object = filter_class_type()
+        filters_list.append(filter_object)
 
+        for attribute, value in attributes.items():
+            filter_object.set_attribute(attribute, value)
+    
+    points_generator.set_attribute("filters", filters_list)
+
+
+
+def create_input_objects(dict_input):
+
+    problem_class_dict = dict_input["problem_class"]
+    create_problem_class(problem_class_dict)
+
+    points_generator_dict = dict_input["points_generator"]
+    create_points_generator(points_generator_dict)
+    
+    filters_dict = dict_input.get("filters")
+    create_filters(filters_dict)
+    
 
 def create_matrices_calculator(dict_mat_calculations):
 
@@ -69,6 +89,20 @@ def create_matrices_calculator(dict_mat_calculations):
         problem_class.output_name
     )
 
+
+def create_subproblems(dict_subproblems):
+    subproblems_list = []
+    for class_name, attributes in dict_subproblems.items():
+        class_type = getattr(subproblems, class_name)
+        subproblem_object = class_type()
+        if (subproblem_object not in subproblems_list):
+            subproblems_list.append(subproblem_object)
+
+        for attribute, value in attributes.items():
+            subproblem_object.set_attribute(attribute, value)
+
+    problem_class = ProblemClass()
+    problem_class.set_attribute("subproblems", subproblems_list)
 
 
 def create_constraints_objects(dict_cons_class):
@@ -110,11 +144,16 @@ def read_configurations(arguments):
 
         dict_input = dict_data["input"]
         create_input_objects(dict_input)
+        
         dict_matrices_calculations = dict_data["matrices_calculations"]
         create_matrices_calculator(dict_matrices_calculations)
 
+        dict_subproblems = dict_data["subproblems"]
+        create_subproblems(dict_subproblems)
+
         dict_cons_class = dict_data["constraints"]
         create_constraints_objects(dict_cons_class)
+
 
 
 def parse_command_line_arguments():

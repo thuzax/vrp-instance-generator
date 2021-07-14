@@ -4,9 +4,21 @@ from src import exceptions
 
 class SubProblem(ABC):
 
+    instance = None
+    output_dict_keys = None
+    
+    def __new__(cls, *args, **kwargs):
+        if (cls.instance is None):
+            cls.instance = super(SubProblem, cls).__new__(
+                cls, *args, **kwargs
+            )
+        
+        return cls.instance
+
+
     def __init__(self, subproblem_name):
         self.subproblem_name = subproblem_name
-        self.output_dict_keys = None
+
 
     def set_attribute(self, name, value):
         if (not hasattr(self, name)):
@@ -15,6 +27,7 @@ class SubProblem(ABC):
                 name
             )
         self.__setattr__(name, value)
+
 
     @abstractmethod
     def get_subproblem_instance(self):
@@ -28,6 +41,10 @@ class SubProblem(ABC):
     def get_subproblem_result(self):
         pass
     
+    @abstractmethod
+    def get_dynamic_setting_elements(self):
+        pass
+
     def solve_subproblem(self):
         self.get_subproblem_instance()
         self.solve_instance()

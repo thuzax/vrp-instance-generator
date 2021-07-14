@@ -74,7 +74,7 @@ class PickupAndDelivery(Constraint):
                 [i if has_pd[i] else None for i in range(len(self.points))]
             )
 
-            indices_with_pd.remove(None)
+            indices_with_pd.discard(None)
             
             already_chosen = already_chosen.union(indices_with_pd)
 

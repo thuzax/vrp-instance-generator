@@ -11,6 +11,18 @@ from src import execution_log
 class CVRPFilo(SubProblem):
     filo_command_location = None
 
+    # from problem class
+    points = None
+
+    # generatad
+    capacity = None
+    demands = None
+
+    # parameter
+    cvrp_input_path = None
+    cvrp_input_name = None
+    cvrp_input_file = None
+
     def __init__(self):
         super().__init__("CVRP solved by FILO")
 
@@ -20,7 +32,7 @@ class CVRPFilo(SubProblem):
         """
 
         text = ""
-        text += "NAME\t:\t" + self.cvrp_file_name
+        text += "NAME\t:\t" + self.cvrp_input_name
         text += "\n"
         text += "COMMENT\t:\t" + "\"\""
         text += "\n"
@@ -76,36 +88,23 @@ class CVRPFilo(SubProblem):
         with open(self.cvrp_input_file, "w") as output_file:
             output_file.write(output_text)
 
-    
+
+    def make_instance_file_name(self):
+
+        if (self.cvrp_input_path[-1] != "/"):
+            self.cvrp_input_path = self.cvrp_input_path + "/"
+
+        
+        self.cvrp_input_file = self.cvrp_input_path + "cvrp_" 
+        self.cvrp_input_file += self.cvrp_input_name + ".vrp"
+
+
     def get_subproblem_instance(self):
-        problem_class = ProblemClass()
 
-        self.cvrp_file_path = copy.copy(problem_class.output_path)
-
-        if (self.cvrp_file_path[-1] != "/"):
-            self.cvrp_file_path = self.cvrp_file_path + "/"
-
-        self.cvrp_file_name = problem_class.output_name
-        
-        self.cvrp_input_file = self.cvrp_file_path + "cvrp_" 
-        self.cvrp_input_file += self.cvrp_file_name + ".vrp"
-
-        self.size = problem_class.number_of_points
-
-        if (
-            hasattr(problem_class, "capacity")
-            and getattr(problem_class, "capacity") is not None
-        ):
-            self.capacity = problem_class.capacity
-        else:
-            self.capacity = 1000000
-        
-        self.points = copy.deepcopy(problem_class.points)
+        self.capacity = 1000000
 
         probabilities = [1, 0, 0, 0]
-
         self.demands = []
-
         for i in range(len(self.points)):
             self.demands.append(0)
             for probability in probabilities:
@@ -113,6 +112,7 @@ class CVRPFilo(SubProblem):
                 if (p <= probability):
                     self.demands[i] += 1
 
+        self.make_instance_file_name()
         self.write_cvrp_file()
 
         
@@ -121,10 +121,8 @@ class CVRPFilo(SubProblem):
         """Run the filo algorithm. It uses the variable filo_path, provided by the paths file.
         """
 
-        problem_class = ProblemClass()
-
         instance = os.path.abspath(self.cvrp_input_file)
-        output_path = os.path.abspath(self.cvrp_file_path) + "/"
+        output_path = os.path.abspath(self.cvrp_input_path) + "/"
         
         filo_path = self.filo_command_location
 
@@ -146,7 +144,7 @@ class CVRPFilo(SubProblem):
         # The commands below runs the server and shows the output in a log file 
         # callend #osrm-server-log-file.txt
         log_name = output_path + "#filo_log_file_" 
-        log_name += self.cvrp_file_name + ".log"
+        log_name += self.cvrp_input_name + ".log"
         filo_log = open(log_name, "w")
         filo_process = subprocess.Popen(
             "exec " + command, 
@@ -175,3 +173,13 @@ class CVRPFilo(SubProblem):
 
             self.cvrp_routes = routes
         
+
+    def get_dynamic_setting_elements(self):
+        cvrp_elements_to_problem_elements = {
+            "points" : "points",
+            "cvrp_input_path" : "output_path",
+            "cvrp_input_name" : "output_name"
+        }
+
+        return cvrp_elements_to_problem_elements
+

@@ -233,7 +233,8 @@ class PDPTW(ProblemClass):
         if (self.output_path[-1] != "/"):
             self.output_path += "/"
 
-        json_output_file_name = self.output_path + self.output_name + ".json"
+        json_output_file_name = self.output_path + self.output_name 
+        json_output_file_name += "_sol.json"
         with open(json_output_file_name, "w") as output_file:
             output_file.write(json.dumps(output_dict, indent=2))
 

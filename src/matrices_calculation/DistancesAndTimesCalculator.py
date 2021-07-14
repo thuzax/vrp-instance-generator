@@ -78,6 +78,7 @@ class DistancesAndTimesCalculator(ABC):
 
         return (distance_matrix, time_matrix)
 
+
     def set_log_file(self, output_log_file_path, output_file_name):
         if (output_log_file_path[-1] != "/"):
             output_log_file_path = output_log_file_path + "/"

@@ -60,33 +60,31 @@ def calculate_distances():
 def solve_constraints_subproblems():
     execution_log.info_log("Starting Subproblems Resolution...")
     problem_class = ProblemClass()
-    constraints = problem_class.constraints_objects
+    subproblems = problem_class.subproblems
 
     execution_log.info_log("Solving Subproblems:")
-    for constraint_name, constraint in constraints.items():
-        if (constraint.subproblems is None):
-            continue
+    for subproblem in subproblems:
+        execution_log.info_log(
+            "Solving: " 
+            + subproblem.__class__.__name__ 
+            + "..."
+        )
         
-        for subproblem in constraint.subproblems:
-            execution_log.info_log(
-                "Solving: " 
-                + subproblem.__class__.__name__ 
-                + "..."
+        execution_log.info_log("Saving Subproblem Output...")
+
+        dynamic_attributes = subproblem.get_dynamic_setting_elements()
+        for subprob_attribute, prob_attribute in dynamic_attributes.items():
+            subproblem.set_attribute(
+                subprob_attribute, 
+                getattr(problem_class, prob_attribute)
             )
-            need_to_solve = False
-            for key in subproblem.output_dict_keys:
-                if (getattr(problem_class, key) is None):
-                    need_to_solve = True
 
-            if (not need_to_solve):
-                continue
-
-            execution_log.info_log("Saving Subproblem Output...")
-            dict_solution = subproblem.solve_subproblem()
-            for attribute, value in dict_solution.items():
-                problem_class.set_attribute(attribute, value)
-            
-            execution_log.info_log("Subproblem Solved.")
+        
+        dict_solution = subproblem.solve_subproblem()
+        for attribute, value in dict_solution.items():
+            problem_class.set_attribute(attribute, value)
+        
+        execution_log.info_log("Subproblem Solved.")
     
     execution_log.info_log("*Subproblems Resolution Finished.*")
 

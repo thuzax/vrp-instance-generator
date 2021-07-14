@@ -2,7 +2,7 @@ import json
 
 from abc import ABC, abstractmethod
 
-from src import exceptions
+from src import exceptions, subproblems
 
 
 class ProblemClass(ABC):
@@ -14,6 +14,7 @@ class ProblemClass(ABC):
     # Acquired from configuration file
     number_of_points = None
     constraints_objects = None
+    subproblems = None
     output_path = None
     output_name = None
     output_type = "text"

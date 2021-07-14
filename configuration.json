@@ -2,18 +2,18 @@
     "input" : {
         "points_generator" : {
             "OpenAddressesCSVPointsGenerator" : {
-                "input_path" : "./test_instances/br-mg/",
-                "input_name" : "br-mg-lavras",
+                "input_path" : "./test_instances/br-ms/",
+                "input_name" : "br-ms-cg",
                 "first_coordenate_name" : "LAT",
                 "second_coordenate_name" : "LON",
-                "allow_repetition" : true
+                "allow_repetition" : false
             }
         },
         "problem_class" : {
             "PDPTWURA" : {
                 "number_of_points" : 100,
                 "output_path" : "./test_instances/results",
-                "output_name" : "br-mg-lavras",
+                "output_name" : "br-ms-cg",
                 "output_type" : "json"
             }
         },
@@ -48,13 +48,7 @@
             "radius_limiter": 8,
             "pair_by_random_per": 10,
             "forbid_randomize_points_lefts": false,
-            "allow_repetition": false,
-            "subproblems" : {
-                "CVRPFilo" : {
-                    "filo_command_location": "~/filo/build/filo",
-                    "output_dict_keys" : ["cvrp_routes"]
-                }
-            }
+            "allow_repetition": false
         },
         "TimeWindowsPD": {
             "planning_horizon" : 540,
@@ -68,19 +62,19 @@
             "density_clustering_per_distance" : 0.1,
             "density_per_min" : 0.05,
             "save_figure" : true,
-            "show_figure" : false,
-            "subproblems" : {
-                "CVRPFilo" : {
-                    "filo_command_location": "~/filo/build/filo",
-                    "output_dict_keys" : ["cvrp_routes"]
-                }
-            }
+            "show_figure" : false
         },
         "LimitedFleetUrbanRural": {
             "correction_value" : 1.2
         },
         "HomogeneousCapacity": {
             "capacity": 50
+        }
+    },
+    "subproblems" : {
+        "CVRPFilo" : {
+            "filo_command_location": "~/filo/build/filo",
+            "output_dict_keys" : ["cvrp_routes"]
         }
     }
 }

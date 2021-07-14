@@ -22,7 +22,7 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
     running_osrm = False
     server_process = None
 
-    
+
     def __init__(self):
         super().__init__("Open Source Routing Machine")
         if (self.validate_osrm_inputs()):
