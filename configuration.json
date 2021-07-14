@@ -1,0 +1,81 @@
+{
+    "input" : {
+        "points_generator" : {
+            "OpenAddressesCSVPointsGenerator" : {
+                "input_path" : "./test_instances/br-ms/",
+                "input_name" : "br-ms-cg",
+                "first_coordenate_name" : "LAT",
+                "second_coordenate_name" : "LON",
+                "allow_repetition" : false
+            }
+        },
+        "problem_class" : {
+            "PDPTWURA" : {
+                "number_of_points" : 100,
+                "output_path" : "./test_instances/results",
+                "output_name" : "br-ms-cg",
+                "output_type" : "json"
+            }
+        },
+        "filters" : {
+        }
+    },
+    "matrices_calculations" : {
+        "DistancesAndTimesOSRM" : {
+            "distances_locally" : true,
+            "osrm_routed_command_location" : "~/osrm/osrm-backend/build/osrm-routed",
+            "osrm_regions_map_files" : {
+                "br-centro-oeste" : "~/osrm/osrm-backend/mapas/brazil/centro-oeste/centro-oeste-latest.osrm",
+                "br-nordeste" : "~/osrm/osrm-backend/mapas/brazil/nordeste/nordeste-latest.osrm",
+                "br-norte" : "~/osrm/osrm-backend/mapas/brazil/norte/norte-latest.osrm",
+                "br-sudeste" : "~/osrm/osrm-backend/mapas/brazil/sudeste/sudeste-latest.osrm",
+                "br-sul" : "~/osrm/osrm-backend/mapas/brazil/sul/sul-latest.osrm"
+            },
+            "osrm_instance_region" : "br-sudeste"
+        }
+    },
+    "constraints" : {
+        "ServiceTime": {
+            "max_service_time": 5,
+            "min_service_time": 5,
+            "number_of_points": 10 
+        },
+        "PickupAndDelivery": {
+            "max_demand": 10,
+            "min_demand": 1,
+            "pair_by_route_per": 80,
+            "pair_by_radius_per": 50,
+            "radius_limiter": 8,
+            "pair_by_random_per": 10,
+            "forbid_randomize_points_lefts": false,
+            "allow_repetition": false
+        },
+        "TimeWindowsPD": {
+            "planning_horizon" : 540,
+            "time_windows_size" : 60,
+            "time_windows_size_max_variation" : 0
+        },
+        "UrbanRuralAptitude": {
+            "per_number_urban_centers" : 5,
+            "max_urban_distance" : 0.1,
+            "method" : "dbscan",
+            "density_clustering_per_distance" : 0.1,
+            "density_per_min" : 0.05,
+            "save_figure" : true,
+            "show_figure" : false
+        },
+        "LimitedFleetUrbanRural": {
+            "correction_value" : 1.2
+        },
+        "HomogeneousCapacity": {
+            "capacity": 50
+        }
+    },
+    "subproblems" : {
+        "CVRPFilo" : {
+            "filo_command_location": "~/filo/build/filo",
+            "output_dict_keys" : ["cvrp_routes"]
+        }
+    }
+}
+

@@ -1,5 +1,0 @@
-{
-    "filo": "~/filo/build/filo",
-    "osrm_routed": "~/osrm/osrm-backend/build/osrm-routed",
-    "osrm_map": "~/osrm/osrm-backend/mapas/brazil/norte/norte-latest.osrm"
-}
