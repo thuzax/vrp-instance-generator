@@ -38,7 +38,6 @@ class FilterCSVByReachingWithOSRM(Filter):
                                                     )
 
             if ((distance is None) or (time is None)):
-                print(ind)
                 removed_set = removed_set.append(row)
 
 

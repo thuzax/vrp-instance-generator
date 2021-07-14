@@ -132,7 +132,7 @@ class PickupAndDelivery(Constraint):
             indices_with_pd = set(
                 [i if has_pd[i] else None for i in range(len(self.points))]
             )
-            indices_with_pd.remove(None)
+            indices_with_pd.discard(None)
         
             indices -= indices_with_pd
 

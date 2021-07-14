@@ -1,7 +1,0 @@
-{
-    "python.pythonPath": "/usr/bin/python3",
-    "python.analysis.extraPaths": [
-        "./src/",
-        "./points_generation_managers"
-    ]
-}

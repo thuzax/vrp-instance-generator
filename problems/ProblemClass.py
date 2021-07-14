@@ -1,3 +1,5 @@
+import json
+
 from abc import ABC, abstractmethod
 
 from src import exceptions
@@ -90,6 +92,19 @@ class ProblemClass(ABC):
         if (self.output_type == "json"):
             self.write_json_file()
             return
+
+
+    def write_final_data(self, running_data):
+        if (self.output_path[-1] != "/"):
+            self.output_path += "/"
+
+        json_output_file_name = ""
+        json_output_file_name += self.output_path 
+        json_output_file_name += "running_data_"
+        json_output_file_name += self.output_name 
+        json_output_file_name += ".json"
+        with open(json_output_file_name, "w") as output_file:
+            output_file.write(json.dumps(running_data, indent=2))
 
 
     @abstractmethod

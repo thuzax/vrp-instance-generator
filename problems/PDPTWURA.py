@@ -220,7 +220,9 @@ class PDPTWURA(ProblemClass):
         if (self.output_path[-1] != "/"):
             self.output_path += "/"
         
-        with open(self.output_path + self.output_name + ".pdptwura", "w") as output_file:
+        text_output_file_name = self.output_path + self.output_name 
+        text_output_file_name += ".pdptwura"
+        with open(text_output_file_name, "w") as output_file:
             output_file.write(text)
 
 
@@ -276,6 +278,7 @@ class PDPTWURA(ProblemClass):
         if (self.output_path[-1] != "/"):
             self.output_path += "/"
 
-        with open(self.output_path + self.output_name + ".json", "w") as output_file:
-            output_file.write(json.dumps(output_dict))
+        json_output_file_name = self.output_path + self.output_name + ".json"
+        with open(json_output_file_name, "w") as output_file:
+            output_file.write(json.dumps(output_dict, indent=2))
             

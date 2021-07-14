@@ -11,16 +11,15 @@
         },
         "problem_class" : {
             "PDPTWURA" : {
-                "number_of_points" : 20,
+                "number_of_points" : 200,
                 "output_path" : "./test_instances/results",
                 "output_name" : "br-mg-lavras",
-                "output_type" : "text"
+                "output_type" : "json"
             }
         },
         "filters" : {
         }
     },
-
     "matrices_calculations" : {
         "DistancesAndTimesOSRM" : {
             "distances_locally" : true,
@@ -35,7 +34,6 @@
             "osrm_instance_region" : "br-sudeste"
         }
     },
-
     "constraints" : {
         "ServiceTime": {
             "max_service_time": 5,
@@ -50,7 +48,13 @@
             "radius_limiter": 8,
             "pair_by_random_per": 10,
             "forbid_randomize_points_lefts": false,
-            "allow_repetition": false
+            "allow_repetition": false,
+            "subproblems" : {
+                "CVRPFilo" : {
+                    "filo_command_location": "~/filo/build/filo",
+                    "output_dict_keys" : ["cvrp_routes"]
+                }
+            }
         },
         "TimeWindowsPD": {
             "planning_horizon" : 540,
@@ -64,7 +68,13 @@
             "density_clustering_per_distance" : 0.1,
             "density_per_min" : 0.05,
             "save_figure" : true,
-            "show_figure" : false
+            "show_figure" : false,
+            "subproblems" : {
+                "CVRPFilo" : {
+                    "filo_command_location": "~/filo/build/filo",
+                    "output_dict_keys" : ["cvrp_routes"]
+                }
+            }
         },
         "LimitedFleetUrbanRural": {
             "correction_value" : 1.2

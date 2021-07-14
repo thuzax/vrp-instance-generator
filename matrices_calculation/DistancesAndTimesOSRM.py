@@ -94,7 +94,9 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
         has_response = False
         while (not has_response and total_time < 60):
             if (total_time > 0):
-                execution_log.info_log("Retrying")
+                execution_log.info_log(
+                    "Communication with OSRM Failed. Retrying."
+                )
             try:
                 response = requests.get(url)
                 has_response = True
