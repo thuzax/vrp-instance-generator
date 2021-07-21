@@ -29,6 +29,18 @@ class SubProblem(ABC):
         self.__setattr__(name, value)
 
 
+    def solve_subproblem(self):
+        self.get_subproblem_instance()
+        self.solve_instance()
+        self.get_subproblem_result()
+
+        solution_dict = {}
+        for item in self.output_dict_keys:
+            solution_dict[item] = self.__dict__.get(item)
+
+        return solution_dict
+
+
     @abstractmethod
     def get_subproblem_instance(self):
         pass
@@ -44,15 +56,3 @@ class SubProblem(ABC):
     @abstractmethod
     def get_dynamic_setting_elements(self):
         pass
-
-    def solve_subproblem(self):
-        self.get_subproblem_instance()
-        self.solve_instance()
-        self.get_subproblem_result()
-
-        solution_dict = {}
-        for item in self.output_dict_keys:
-            solution_dict[item] = self.__dict__.get(item)
-
-        return solution_dict
-    

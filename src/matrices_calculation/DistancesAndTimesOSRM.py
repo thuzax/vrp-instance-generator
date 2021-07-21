@@ -207,6 +207,7 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
             
         times = data["durations"][0]
 
+
         for i in range(len(times)):
             times[i] = times[i] / 60
             times[i] = math.ceil(times[i])

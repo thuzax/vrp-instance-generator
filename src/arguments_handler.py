@@ -175,7 +175,8 @@ def parse_command_line_arguments():
         dest="seed",
         help="set the random function seed.",
         action="store",
-        default=0,
+        default=None,
+        type=int,
         required=False
     )
 
