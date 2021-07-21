@@ -159,5 +159,6 @@ dmypy.json
 *.png
 running_data_*
 *.log
-*_sol.json
+*_sol.*
+
 # End of https://www.toptal.com/developers/gitignore/api/vscode,python

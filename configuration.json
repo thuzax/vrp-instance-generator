@@ -14,7 +14,7 @@
                 "number_of_points" : 50,
                 "output_path" : "./test_instances/results/",
                 "output_name" : "br-ms-cg",
-                "output_type" : "json"
+                "output_type" : "pdptwura"
             }
         },
         "filters" : {
