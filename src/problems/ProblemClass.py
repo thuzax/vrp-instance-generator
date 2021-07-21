@@ -17,7 +17,7 @@ class ProblemClass(ABC):
     subproblems = None
     output_path = None
     output_name = None
-    output_type = "text"
+    output_type = "json"
     
     # Acquired while running
     points = None
@@ -87,12 +87,17 @@ class ProblemClass(ABC):
 
 
     def write_file(self):
-        if (self.output_type == "text"):
-            self.write_text_file()
-            return
+        if (self.output_path[-1] != "/"):
+            self.output_path += "/"
+
+        output_file_name = self.output_path + self.output_name 
+        output_file_name += "_sol." + self.output_type
+
         if (self.output_type == "json"):
-            self.write_json_file()
+            self.write_json_file(output_file_name)
             return
+        
+        self.write_generic_file(output_file_name)
 
 
     def write_final_data(self, running_data):
@@ -124,11 +129,11 @@ class ProblemClass(ABC):
 
 
     @abstractmethod
-    def write_text_file(self):
+    def write_generic_file(self, output_file_name):
         pass
     
 
     @abstractmethod
-    def write_json_file(self):
+    def write_json_file(self, output_file_name):
         pass
 

@@ -97,7 +97,7 @@ class PDPTWURA(ProblemClass):
             self.set_attribute(attrbute, value)
 
 
-    def write_text_file(self):
+    def write_generic_file(self, output_file_name):
         text = ""
         text += "NAME : " + str(self.name)
         text += "\n"
@@ -220,13 +220,11 @@ class PDPTWURA(ProblemClass):
         if (self.output_path[-1] != "/"):
             self.output_path += "/"
         
-        text_output_file_name = self.output_path + self.output_name 
-        text_output_file_name += ".pdptwura"
-        with open(text_output_file_name, "w") as output_file:
+        with open(output_file_name, "w") as output_file:
             output_file.write(text)
 
 
-    def write_json_file(self):
+    def write_json_file(self, output_file_name):
         output_dict = {}
 
         output_dict["points"] = copy.deepcopy(self.points)
@@ -278,8 +276,6 @@ class PDPTWURA(ProblemClass):
         if (self.output_path[-1] != "/"):
             self.output_path += "/"
 
-        json_output_file_name = self.output_path + self.output_name 
-        json_output_file_name += "_sol.json"
-        with open(json_output_file_name, "w") as output_file:
-            output_file.write(json.dumps(output_dict, indent=2))
+        with open(output_file_name, "w") as output_file:
+            output_file.write(json.dumps(output_dict))
             

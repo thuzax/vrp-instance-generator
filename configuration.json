@@ -11,8 +11,8 @@
         },
         "problem_class" : {
             "PDPTWURA" : {
-                "number_of_points" : 100,
-                "output_path" : "./test_instances/results",
+                "number_of_points" : 50,
+                "output_path" : "./test_instances/results/",
                 "output_name" : "br-ms-cg",
                 "output_type" : "json"
             }
@@ -31,7 +31,7 @@
                 "br-sudeste" : "~/osrm/osrm-backend/mapas/brazil/sudeste/sudeste-latest.osrm",
                 "br-sul" : "~/osrm/osrm-backend/mapas/brazil/sul/sul-latest.osrm"
             },
-            "osrm_instance_region" : "br-sudeste"
+            "osrm_instance_region" : "br-centro-oeste"
         }
     },
     "constraints" : {
