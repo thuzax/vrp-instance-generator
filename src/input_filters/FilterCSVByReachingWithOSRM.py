@@ -10,6 +10,7 @@ class FilterCSVByReachingWithOSRM(Filter):
         self.first_coordenate_name = None
         self.second_coordenate_name = None
 
+
     def apply_filter(self, data):
         removed_set = pandas.DataFrame(columns=data.columns)
 

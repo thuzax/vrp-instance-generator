@@ -5,6 +5,7 @@ class FilterCSVNoStreet(Filter):
         super().__init__("Filter removing elements with no street")
         self.street_key_name = None
 
+
     def apply_filter(self, data):
         """
         Remove points nased on the address street

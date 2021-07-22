@@ -280,7 +280,6 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
 
         return (distances, times)
 
-
     def calculate_dist_and_time_from_source(self, source_position, points):
         """Make a /table request to OSRM server and return distance and time between from a source to a list of points. The request will be remote if --run-distances-remote parameter is set, and locally otherwise.
         """
