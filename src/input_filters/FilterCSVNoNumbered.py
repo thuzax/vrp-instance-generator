@@ -5,6 +5,7 @@ class FilterCSVNoNumbered(Filter):
         super().__init__("Filter removing elements with no number")
         self.number_key_name = None
 
+
     def apply_filter(self, data):
         """
         Remove points nased on the address number

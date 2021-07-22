@@ -161,4 +161,7 @@ running_data_*
 *.log
 *_sol.*
 
+# exceptions
+!class_diagram.png
+
 # End of https://www.toptal.com/developers/gitignore/api/vscode,python
