@@ -27,6 +27,14 @@ class ServiceTime(Constraint):
         return {"services_times": services_times}
 
 
+    def get_dynamic_setting_elements(self):
+        services_attributes_to_problem = {
+            "number_of_points" : "number_of_points"
+        }
+        return services_attributes_to_problem
+
+
+
     def validate_values(self):
         if (self.number_of_points is None or self.number_of_points <= 0):
             raise exceptions.GreaterThanZeroParameter(

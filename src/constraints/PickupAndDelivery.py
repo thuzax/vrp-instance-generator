@@ -243,6 +243,16 @@ class PickupAndDelivery(Constraint):
         }
 
 
+    def get_dynamic_setting_elements(self):
+        pd_attributes_to_problem = {
+            "points" : "points",
+            "cvrp_routes" : "cvrp_routes",
+            "distance_matrix" : "distance_matrix"
+        }
+        
+        return pd_attributes_to_problem
+
+
     def validate_values(self):
         if (self.points is None):
             raise exceptions.ParamMustBeSetted("PickupAndDelivery.points")

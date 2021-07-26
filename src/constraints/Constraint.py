@@ -21,5 +21,10 @@ class Constraint(ABC):
         pass
 
     @abstractmethod
+    def get_dynamic_setting_elements(self):
+        pass
+
+    @abstractmethod
     def validate_values(self):
         pass
+

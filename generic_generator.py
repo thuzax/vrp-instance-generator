@@ -81,8 +81,7 @@ def solve_constraints_subproblems():
 
         
         dict_solution = subproblem.solve_subproblem()
-        for attribute, value in dict_solution.items():
-            problem_class.set_attribute(attribute, value)
+        problem_class.update_problem_class(dict_solution)
         
         execution_log.info_log("Subproblem Solved.")
     
@@ -98,17 +97,18 @@ def generate_constraints():
 
     for constraint_class in generation_order:
         execution_log.info_log("Updating Dynamic Values...")
-        dict_to_set_dynamic = problem_class.get_dynamic_setting_dict(
-            constraint_class
+        constraint_object = constraints_objects[constraint_class]
+        
+        dict_cons_attr_to_problem = (
+            constraint_object.get_dynamic_setting_elements()
         )
 
-        constraint_object = constraints_objects[constraint_class]
 
 
-        for attribute, value in dict_to_set_dynamic.items():
+        for cons_attribute, prob_attribute in dict_cons_attr_to_problem.items():
             constraint_object.set_attribute(
-                attribute,
-                value
+                cons_attribute,
+                getattr(problem_class, prob_attribute)
             )
 
         execution_log.info_log("Generating " + constraint_class + "...")
