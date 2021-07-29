@@ -37,60 +37,6 @@ class PDPTWURA(ProblemClass):
             "LimitedFleetUrbanRural"
         ]
 
-    def get_dynamic_setting_dict(self, constraint_class):
-
-        dynamic_setting_dict = {}
-        
-        if (constraint_class == "PickupAndDelivery"):
-            dynamic_setting_dict["points"] = (
-                copy.deepcopy(self.points)
-            )
-            dynamic_setting_dict["cvrp_routes"] = (
-                copy.deepcopy(self.cvrp_routes)
-            )
-            dynamic_setting_dict["distance_matrix"] = (
-                copy.deepcopy(self.distance_matrix)
-            )
-        
-        if (constraint_class == "ServiceTime"):
-            dynamic_setting_dict["number_of_points"] = (
-                copy.deepcopy(self.number_of_points)
-            )
-
-        if (constraint_class == "TimeWindowsPD"):
-            dynamic_setting_dict["pickups_and_deliveries"] = (
-                copy.deepcopy(self.pickups_and_deliveries)
-            )
-            dynamic_setting_dict["services_times"] = (
-                copy.deepcopy(self.services_times)
-            )
-            dynamic_setting_dict["time_matrix"] = (
-                copy.deepcopy(self.time_matrix)
-            )
-
-        if (constraint_class == "UrbanRuralAptitude"):
-            dynamic_setting_dict["points"] = (
-                copy.deepcopy(self.points)
-            )
-
-            dynamic_setting_dict["figure_path"] = (
-                self.output_path
-            )
-
-            dynamic_setting_dict["figure_name"] = (
-                self.output_name
-            )
-
-        if (constraint_class == "LimitedFleetUrbanRural"):
-            dynamic_setting_dict["urban_rural_aptitude"] = (
-                copy.deepcopy(self.urban_rural_aptitude)
-            )
-            dynamic_setting_dict["cvrp_routes"] = (
-                copy.deepcopy(self.cvrp_routes)
-            )
-
-        return dynamic_setting_dict
-
 
     def update_problem_class(self, constraint_dict):
         for attrbute, value in constraint_dict.items():

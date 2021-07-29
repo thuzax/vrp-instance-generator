@@ -17,6 +17,10 @@ class HomogeneousCapacity(Constraint):
         return {"capacity": self.capacity}
     
 
+    def get_dynamic_setting_elements(self):
+        return {}
+
+
     def validate_values(self):
         if (self.capacity is None or self.capacity == 0):
             raise exceptions.GreaterThanZeroParameter(

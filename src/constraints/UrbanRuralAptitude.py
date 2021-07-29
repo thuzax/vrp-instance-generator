@@ -21,11 +21,11 @@ class UrbanRuralAptitude(Constraint):
         self.method = None
         self.save_figure = False
         self.show_figure = False
-        self.figure_path = None
-        self.figure_name = None
 
         # must be setted dynamically
         self.points = None
+        self.figure_path = None
+        self.figure_name = None
 
         # DBSCAN optional parameters and default values
         self.density_clustering_per_distance = 0.1
@@ -378,6 +378,15 @@ class UrbanRuralAptitude(Constraint):
         urban_rural_aptitude = self.generate_aptitude(number_urban_centers)
 
         return {"urban_rural_aptitude": urban_rural_aptitude}
+
+
+    def get_dynamic_setting_elements(self):
+        urb_rur_apt_attributes_to_problem = {
+            "points" : "points",
+            "figure_path" : "output_path",
+            "figure_name" : "output_name"
+        }
+        return urb_rur_apt_attributes_to_problem
 
 
     def validate_values(self):

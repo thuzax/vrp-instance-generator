@@ -54,6 +54,15 @@ class LimitedFleetUrbanRural(Constraint):
         return {"fleets_sizes": fleets_sizes}
 
 
+    def get_dynamic_setting_elements(self):
+        limited_fleet_attributes_to_problem = {
+            "urban_rural_aptitude" : "urban_rural_aptitude",
+            "cvrp_routes" : "cvrp_routes"
+        }
+        
+        return limited_fleet_attributes_to_problem
+
+
     def validate_values(self):
         if (self.number_of_points is None or self.number_of_points == 0):
             raise exceptions.GreaterThanZeroParameter("number_of_points")

@@ -85,11 +85,6 @@ class ProblemClass(ABC):
 
 
     @abstractmethod
-    def get_dynamic_setting_dict(self, constraint_class):
-        pass
-
-
-    @abstractmethod
     def update_problem_class(self, constraint_dict):
         pass
 

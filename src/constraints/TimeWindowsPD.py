@@ -100,6 +100,16 @@ class TimeWindowsPD(Constraint):
             "time_windows_size": self.time_windows_size
         }
 
+
+    def get_dynamic_setting_elements(self):
+        tw_attributes_to_problem = {
+            "pickups_and_deliveries" : "pickups_and_deliveries",
+            "services_times" : "services_times",
+            "time_matrix" : "time_matrix"
+        }
+        return tw_attributes_to_problem
+
+
     def validate_values(self):
         if (self.pickups_and_deliveries is None):
             raise exceptions.ParamMustBeSetted("pickup_and_deliveries")
