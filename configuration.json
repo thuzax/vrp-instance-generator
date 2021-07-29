@@ -10,11 +10,11 @@
             }
         },
         "problem_class" : {
-            "PDPTWURA" : {
-                "number_of_points" : 50,
+            "PDPTW" : {
+                "number_of_points" : 10,
                 "output_path" : "./test_instances/results/",
                 "output_name" : "br-ms-cg",
-                "output_type" : "pdptw"
+                "output_type" : "json"
             }
         },
         "filters" : {

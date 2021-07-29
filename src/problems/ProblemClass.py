@@ -57,7 +57,7 @@ class ProblemClass(ABC):
             self.output_path += "/"
 
         output_file_name = self.output_path + self.output_name 
-        output_file_name += "_sol." + self.output_type
+        output_file_name += "_input." + self.output_type
 
         if (self.output_type == "json"):
             self.write_json_file(output_file_name)

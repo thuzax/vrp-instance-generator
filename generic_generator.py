@@ -128,7 +128,7 @@ def write_file():
 
 
 if __name__ == "__main__":
-    execution_log.info_log("Starting Program")
+    execution_log.info_log("*Starting Program*")
     start_time = time.time()
 
     execution_log.info_log("Reading Input Parameters...")

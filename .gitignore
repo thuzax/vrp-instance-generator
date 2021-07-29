@@ -160,6 +160,7 @@ dmypy.json
 running_data_*
 *.log
 *_sol.*
+*_input.*
 
 # exceptions
 !class_diagram.png
