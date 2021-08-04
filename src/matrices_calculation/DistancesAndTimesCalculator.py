@@ -74,8 +74,15 @@ class DistancesAndTimesCalculator(ABC):
 
         time_matrix = numpy.array(time_matrix)
         time_matrix = numpy.around(time_matrix)
+        for i in range(len(self.points)):
+            for j in range(len(self.points)):
+                if (i == j):
+                    continue
+                if (distance_matrix[i][j] < 1):
+                    distance_matrix[i][j] = 1
+                if (time_matrix[i][j] < 1):
+                    time_matrix[i][j] = 1
         
-
         return (distance_matrix, time_matrix)
 
 

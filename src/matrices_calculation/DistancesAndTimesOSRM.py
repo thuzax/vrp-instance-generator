@@ -46,7 +46,6 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
     def init_osrm_server(self):
         """Initialize a osrm server using the command osrm-routed. It will not start a new server if there is another one running.
         """
-        
         command = ""
         command += self.osrm_routed_command_location + " "
         command += self.osrm_regions_map_files[self.osrm_instance_region] + " " 
@@ -59,6 +58,8 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
         if (self.running_osrm):
             # execution_log.info_log("Process not initiated. There is already a running osrm server.")
             return
+        
+        execution_log.info_log("Starting OSRM with command: \n    " + command)
 
         # The command below runs the server and shows output in the terminal
         # server_process = subprocess.Popen("exec " + command, shell=True)

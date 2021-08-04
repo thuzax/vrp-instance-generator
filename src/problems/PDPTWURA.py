@@ -207,49 +207,90 @@ class PDPTWURA(ProblemClass):
     def write_json_file(self, output_file_name):
         output_dict = {}
 
-        output_dict["points"] = copy.deepcopy(self.points)
+        mapping = {}
+        position = 1
+        for i, j in self.pickups_and_deliveries:
+            mapping[position] = i
+            mapping[position + int(len(self.points)/2)] = j
+            position += 1
 
-        output_dict["points"] = [[x,y] for x, y in output_dict["points"]]
-    
+        list_points = [
+            [self.points[mapping[i+1]][0], self.points[mapping[i+1]][1]] 
+            for i in range(len(self.points))
+        ]
+
+        output_dict["points"] = {}
+        for i in range(len(list_points)):
+            output_dict["points"][i+1] = list_points[i]
+
         output_dict["number_of_points"] = self.number_of_points
 
-        output_dict["distance_matrix"] = copy.deepcopy(self.distance_matrix)
-        output_dict["distance_matrix"] = (
-            self.distance_matrix.astype(int).tolist()
-        )
+        output_dict["distance_matrix"] = {}
+        output_dict["time_matrix"] = {}
+        for i in range(len(self.points)):
+            output_dict["distance_matrix"][i+1] = {}
+            output_dict["time_matrix"][i+1] = {}
+            for j in range(len(self.points)):
+                index_i = mapping[i+1]
+                index_j = mapping[j+1]
+                
+                dist_value = self.distance_matrix[index_i][index_j]
+                dist_value = int(dist_value)
+                output_dict["distance_matrix"][i+1][j+1] = dist_value
 
-        output_dict["time_matrix"] = copy.deepcopy(self.time_matrix)
-        output_dict["time_matrix"] = self.time_matrix.astype(int).tolist()
+                time_value = self.time_matrix[index_i][index_j]
+                time_value = int(time_value)
+                output_dict["time_matrix"][i+1][j+1] = time_value
 
         output_dict["capacity"] = self.capacity
 
-        output_dict["pickups_and_deliveries"] = copy.deepcopy(
-            self.pickups_and_deliveries
-        )
+        output_dict["pickups_and_deliveries"] = []
 
+        
+        for i in range(len(self.pickups_and_deliveries)):
+            pickup = i + 1
+            delivery = pickup + len(self.pickups_and_deliveries)
+            output_dict["pickups_and_deliveries"].append([pickup, delivery])
+        
         output_dict["pickups_and_deliveries"] = [
             [int(x), int(y)] for x, y in output_dict["pickups_and_deliveries"]
         ]
         
         output_dict["demands"] = {}
-        for key, value in self.demands.items():
-            output_dict["demands"][int(key)] = int(value)
+
+        for i in range(len(self.points)):
+            output_dict["demands"][i+1] = self.demands[mapping[i+1]]
             
 
-        output_dict["services_times"] = copy.deepcopy(self.services_times)
-        output_dict["services_times"] = self.services_times.tolist()
+        output_dict["services_times"] = {}
+
+        for i in range(len(self.points)):
+            output_dict["services_times"][i+1] = (
+                int(self.services_times[mapping[i+1]])
+            )
 
         time_windows_dict = {}
-        for pair, tws in self.time_windows_pd.items():
-            time_windows_dict[int(pair[0])] = [tws[0][0], tws[0][1]]
-            time_windows_dict[int(pair[1])] = [tws[1][0], tws[1][1]]
+
+        for i in range(len(self.time_windows_pd)):
+            pick_pos = i + 1
+            pick = mapping[pick_pos]
+            deli_pos = pick_pos + len(self.pickups_and_deliveries)
+            deli = mapping[deli_pos]
+            
+            tws = self.time_windows_pd[(pick, deli)]
+
+            time_windows_dict[pick_pos] = [tws[0][0], tws[0][1]]
+            time_windows_dict[deli_pos] = [tws[1][0], tws[1][1]]
         
         output_dict["time_windows_pd"] = time_windows_dict
-
-        output_dict["urban_rural_aptitude"] = [
-            0 if aptitude == "u" else 1
-            for aptitude in self.urban_rural_aptitude
+        list_urb_rur = [
+            0 if self.urban_rural_aptitude[mapping[i+1]] == "u" else 1
+            for i in range(len(self.urban_rural_aptitude))
         ]
+
+        output_dict["urban_rural_aptitude"] = {}
+        for i in range(len(list_urb_rur)):
+            output_dict["urban_rural_aptitude"][i+1] = list_urb_rur[i]
 
         output_dict["fleets_size"] = copy.deepcopy(self.fleets_sizes)
 
