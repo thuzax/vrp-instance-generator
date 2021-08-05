@@ -1,8 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 
 from src import exceptions
 
-class Filter(ABC):
+class Filter(metaclass=ABCMeta):
 
     def __init__(self, filter_name):
         self.filter_name = filter_name

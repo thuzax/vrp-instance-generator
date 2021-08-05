@@ -1,8 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 
 from src import exceptions
 
-class Constraint(ABC):
+class Constraint(metaclass=ABCMeta):
     def __init__(self, constraint_name):
         self.constraint_name = constraint_name
 

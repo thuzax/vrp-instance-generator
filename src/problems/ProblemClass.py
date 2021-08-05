@@ -1,11 +1,11 @@
 import json
 
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 
 from src import exceptions, subproblems
 
 
-class ProblemClass(ABC):
+class ProblemClass(metaclass=ABCMeta):
     
     instance = None
     

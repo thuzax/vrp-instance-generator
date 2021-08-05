@@ -11,7 +11,7 @@
         },
         "problem_class" : {
             "PDPTW" : {
-                "number_of_points" : 10,
+                "number_of_points" : 4,
                 "output_path" : "./test_instances/results/",
                 "output_name" : "br-ms-cg",
                 "output_type" : "json"

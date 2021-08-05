@@ -1,10 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 
 import numpy
 
 from src import exceptions
 
-class DistancesAndTimesCalculator(ABC):
+class DistancesAndTimesCalculator(metaclass=ABCMeta):
 
     instance = None
     

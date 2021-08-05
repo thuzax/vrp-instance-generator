@@ -1,8 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 
 from src import exceptions
 
-class PointsGeneratorManager(ABC):
+class PointsGeneratorManager(metaclass=ABCMeta):
 
     instance = None
 
