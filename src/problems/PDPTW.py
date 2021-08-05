@@ -266,6 +266,9 @@ class PDPTW(ProblemClass):
         
         output_dict["time_windows_pd"] = time_windows_dict
 
+        output_dict["planning_horizon"] = int(self.planning_horizon)
+        output_dict["time_windows_size"] = int(self.time_windows_size)
+
         if (self.output_path[-1] != "/"):
             self.output_path += "/"
 

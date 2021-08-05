@@ -288,6 +288,9 @@ class PDPTWURA(ProblemClass):
             for i in range(len(self.urban_rural_aptitude))
         ]
 
+        output_dict["planning_horizon"] = int(self.planning_horizon)
+        output_dict["time_windows_size"] = int(self.time_windows_size)
+
         output_dict["urban_rural_aptitude"] = {}
         for i in range(len(list_urb_rur)):
             output_dict["urban_rural_aptitude"][i+1] = list_urb_rur[i]
