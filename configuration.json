@@ -2,18 +2,19 @@
     "input" : {
         "points_generator" : {
             "OpenAddressesCSVPointsGenerator" : {
-                "input_path" : "./test_instances/br-ms/",
-                "input_name" : "br-ms-cg",
+                "input_path" : "./test_instances/br-mg/",
+                "input_name" : "br-mg-bh",
                 "first_coordenate_name" : "LAT",
                 "second_coordenate_name" : "LON",
                 "allow_repetition" : false
             }
         },
         "problem_class" : {
-            "PDPTW" : {
-                "number_of_points" : 4,
+            "PDPTWURA" : {
+                "number_of_points" : 20,
+                "number_of_depots" : 10,
                 "output_path" : "./test_instances/results/",
-                "output_name" : "br-ms-cg",
+                "output_name" : "br-mg-bh-200",
                 "output_type" : "json"
             }
         },
@@ -31,28 +32,27 @@
                 "br-sudeste" : "~/osrm/osrm-backend/mapas/brazil/sudeste/sudeste-latest.osrm",
                 "br-sul" : "~/osrm/osrm-backend/mapas/brazil/sul/sul-latest.osrm"
             },
-            "osrm_instance_region" : "br-centro-oeste"
+            "osrm_instance_region" : "br-sudeste"
         }
     },
     "constraints" : {
         "ServiceTime": {
-            "max_service_time": 5,
-            "min_service_time": 5,
-            "number_of_points": 10 
+            "max_service_time": 10,
+            "min_service_time": 1
         },
         "PickupAndDelivery": {
             "max_demand": 10,
             "min_demand": 1,
             "pair_by_route_per": 80,
             "pair_by_radius_per": 50,
-            "radius_limiter": 8,
+            "radius_limiter": 15000,
             "pair_by_random_per": 10,
             "forbid_randomize_points_lefts": false,
             "allow_repetition": false
         },
         "TimeWindowsPD": {
-            "planning_horizon" : 540,
-            "time_windows_size" : 60,
+            "planning_horizon" : 300,
+            "time_windows_size" : 30,
             "time_windows_size_max_variation" : 0
         },
         "UrbanRuralAptitude": {
@@ -68,7 +68,7 @@
             "correction_value" : 1.2
         },
         "HomogeneousCapacity": {
-            "capacity": 50
+            "capacity": 30
         }
     },
     "subproblems" : {

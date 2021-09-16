@@ -17,6 +17,8 @@ class PDPTW(ProblemClass):
     planning_horizon = None
     time_windows_size = None
 
+    number_of_depots = None
+
 
     def __init__(self):
         super().__init__(
@@ -190,74 +192,134 @@ class PDPTW(ProblemClass):
         output_dict = {}
 
         mapping = {}
-        position = 1
+        reverse_mapping = {}
+        if (len(self.depots) == 0):
+            position = 1
+        else:
+            position = self.points_indices[0]
+
+        initial_value = 0 if (len(self.depots) > 0) else 1
+
         for i, j in self.pickups_and_deliveries:
-            mapping[position] = i
-            mapping[position + int(len(self.points)/2)] = j
+            mapping[position] = i - len(self.depots)
+            mapping[position + int(len(self.points)/2)] = j - len(self.depots)
             position += 1
 
         list_points = [
-            [self.points[mapping[i+1]][0], self.points[mapping[i+1]][1]] 
-            for i in range(len(self.points))
+            [
+                self.points[mapping[i+initial_value]][0], 
+                self.points[mapping[i+initial_value]][1]
+            ] 
+            for i in self.points_indices
         ]
 
         output_dict["points"] = {}
-        for i in range(len(list_points)):
-            output_dict["points"][i+1] = list_points[i]
 
-        output_dict["number_of_points"] = self.number_of_points
+        for i in range(len(self.depots)):
+            output_dict["points"][i] = self.depots[i]
+
+        for i in self.points_indices:
+            output_dict["points"][i+initial_value] = (
+                list_points[i-len(self.depots)]
+            )
+
+        output_dict["number_of_points"] = (
+            len(self.points) + len(self.depots)
+        )
+
+        if (len(self.depots) == 1):
+            output_dict["depot"] = 0
+        elif (len(self.depots) > 1):
+            output_dict["depots"] = [i for i in range(len(self.depots))]
 
         output_dict["distance_matrix"] = {}
         output_dict["time_matrix"] = {}
-        for i in range(len(self.points)):
-            output_dict["distance_matrix"][i+1] = {}
-            output_dict["time_matrix"][i+1] = {}
-            for j in range(len(self.points)):
-                index_i = mapping[i+1]
-                index_j = mapping[j+1]
+
+        for i in range(len(self.depots)):
+            output_dict["distance_matrix"][i] = {}
+            output_dict["time_matrix"][i] = {}
+            
+            for j in range(len(self.depots)):
+                dist_value = self.distance_matrix[i][j]
+                dist_value = int(dist_value)
+                output_dict["distance_matrix"][i][j] = dist_value
+
+                time_value = self.time_matrix[i][j]
+                time_value = int(time_value)
+                output_dict["time_matrix"][i][j] = time_value
+
+            for j in self.points_indices:
+                pos_j = j + initial_value
+                index_j = mapping[pos_j] + len(self.depots)
+                
+                dist_value = self.distance_matrix[i][index_j]
+                dist_value = int(dist_value)
+                output_dict["distance_matrix"][i][pos_j] = dist_value
+
+                time_value = self.time_matrix[i][index_j]
+                time_value = int(time_value)
+                output_dict["time_matrix"][i][pos_j] = time_value
+
+        for i in self.points_indices:
+            pos_i = i + initial_value
+            index_i = mapping[pos_i] + len(self.depots)
+            output_dict["distance_matrix"][pos_i] = {}
+            output_dict["time_matrix"][pos_i] = {}
+
+            for j in range(len(self.depots)):
+                dist_value = self.distance_matrix[index_i][j]
+                dist_value = int(dist_value)
+                output_dict["distance_matrix"][pos_i][j] = dist_value
+
+                time_value = self.time_matrix[index_i][j]
+                time_value = int(time_value)
+                output_dict["time_matrix"][pos_i][j] = time_value
+
+            for j in self.points_indices:
+                pos_j = j + initial_value
+                
+                index_j = mapping[pos_j] + len(self.depots)
                 
                 dist_value = self.distance_matrix[index_i][index_j]
                 dist_value = int(dist_value)
-                output_dict["distance_matrix"][i+1][j+1] = dist_value
+                output_dict["distance_matrix"][pos_i][pos_j] = dist_value
 
                 time_value = self.time_matrix[index_i][index_j]
                 time_value = int(time_value)
-                output_dict["time_matrix"][i+1][j+1] = time_value
+                output_dict["time_matrix"][pos_i][pos_j] = time_value
 
         output_dict["capacity"] = self.capacity
 
         output_dict["pickups_and_deliveries"] = []
 
-        
         for i in range(len(self.pickups_and_deliveries)):
-            pickup = i + 1
+            pickup = i + len(self.depots) + initial_value
             delivery = pickup + len(self.pickups_and_deliveries)
             output_dict["pickups_and_deliveries"].append([pickup, delivery])
 
         output_dict["pickups_and_deliveries"] = [
             [int(x), int(y)] for x, y in output_dict["pickups_and_deliveries"]
         ]
-        
-        output_dict["demands"] = {}
 
-        for i in range(len(self.points)):
-            output_dict["demands"][i+1] = self.demands[mapping[i+1]]
-            
+        output_dict["demands"] = {}
+        for i in self.points_indices:
+            output_dict["demands"][i+initial_value] = (
+                self.demands[i]
+            )
 
         output_dict["services_times"] = {}
-
-        for i in range(len(self.points)):
-            output_dict["services_times"][i+1] = (
-                int(self.services_times[mapping[i+1]])
+        for i in self.points_indices:
+            output_dict["services_times"][i+initial_value] = (
+                self.services_times[i]
             )
 
         time_windows_dict = {}
 
-        for i in range(len(self.time_windows_pd)):
-            pick_pos = i + 1
-            pick = mapping[pick_pos]
+        for i in range(len(self.pickups_and_deliveries)):
+            pick_pos = i + len(self.depots) + initial_value
+            pick = self.pickups_and_deliveries[i][0]
             deli_pos = pick_pos + len(self.pickups_and_deliveries)
-            deli = mapping[deli_pos]
+            deli = self.pickups_and_deliveries[i][1]
             
             tws = self.time_windows_pd[(pick, deli)]
 

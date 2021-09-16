@@ -24,7 +24,6 @@ class TimeWindowsPD(Constraint):
     def generate_time_windows(self):
 
         time_windows = {}
-
         for pickup, delivery in self.pickups_and_deliveries:
             
             # Calculate pickup time window
@@ -37,6 +36,9 @@ class TimeWindowsPD(Constraint):
                     - self.services_times[delivery]
                     - math.ceil(self.time_windows_size / 2)
                 )
+            
+            if (tw_pickup_interval_end < 0):
+                raise exceptions.TimeWindowsEndedAfterPlanningHorizon()
 
             ## select a central point from interval
             pickup_central_point = random.randint(
@@ -55,18 +57,31 @@ class TimeWindowsPD(Constraint):
                 + math.ceil(self.time_windows_size / 2)
             )
 
-            
             time_windows_pickup = (tw_pickup_start, tw_pickup_end)
+
 
             # Calculate delivery time window
             ## calculate interval for a central point based on the pickup window
             ## since the pickup must be done before the delivery
+            delivery_min_arrival = (
+                tw_pickup_start 
+                + self.services_times[pickup] 
+                + self.time_matrix[pickup][delivery]
+            )
+
             tw_delivery_interval_start = (
-                    tw_pickup_start 
+                    delivery_min_arrival 
                     + math.ceil(self.time_windows_size / 2)
                 )
 
-            tw_delivery_interval_end = tw_pickup_interval_end
+            tw_delivery_interval_end = (
+                self.planning_horizon
+                - self.services_times[delivery]
+                - math.ceil(self.time_windows_size / 2)
+            )
+
+            if (tw_delivery_interval_end < 0):
+                raise exceptions.TimeWindowsEndedAfterPlanningHorizon()
 
             delivery_central_point = random.randint(
                     tw_delivery_interval_start,
@@ -77,6 +92,7 @@ class TimeWindowsPD(Constraint):
                 delivery_central_point 
                 - math.ceil(self.time_windows_size / 2)
             )
+
             tw_delivery_end = (
                 delivery_central_point 
                 + math.ceil(self.time_windows_size / 2)

@@ -81,3 +81,18 @@ class ObjectDoesNotHaveAttribute(Exception):
         message += "does not have attribute " + str(attribute_name)
 
         super().__init__(message)
+
+class TimeWindowsEndedAfterPlanningHorizon(Exception):
+    def __init__(self):
+        message = ""
+        message += "The time distance between generation point "
+        message += "made a time window generation impossible."
+        super().__init__(message)
+
+class InputWithNotEnoughPoints(Exception):
+    def __init__(self):
+        message = ""
+        message += "The input file for OpenAddress points generation "
+        message += "does not have enough locations to create the requested "
+        message += "points"
+        

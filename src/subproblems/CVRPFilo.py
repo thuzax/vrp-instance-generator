@@ -23,6 +23,8 @@ class CVRPFilo(SubProblem):
     cvrp_input_name = None
     cvrp_input_file = None
 
+    depot = None
+
     def __init__(self):
         super().__init__("CVRP solved by FILO")
 
@@ -49,9 +51,11 @@ class CVRPFilo(SubProblem):
 
         random_lat = random.randint(0, len(self.points)-1)
         random_lon = random.randint(0, len(self.points)-1)
-        fake_depot = (self.points[random_lat][0], self.points[random_lon][1])
+        depot = (self.points[random_lat][0], self.points[random_lon][1])
+        if (len(self.depot) > 0):
+            depot = self.depot[0]
 
-        text += str(1) + "\t" + str(fake_depot[0]) + "\t" + str(fake_depot[1])
+        text += str(1) + "\t" + str(depot[0]) + "\t" + str(depot[1])
         text += "\n"
 
         for i in range(len(self.points)):
@@ -177,6 +181,7 @@ class CVRPFilo(SubProblem):
     def get_dynamic_setting_elements(self):
         cvrp_elements_to_problem_elements = {
             "points" : "points",
+            "depot" : "depots",
             "cvrp_input_path" : "output_path",
             "cvrp_input_name" : "output_name"
         }

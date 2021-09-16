@@ -12,27 +12,32 @@ class ServiceTime(Constraint):
 
         # Must be setted dynamically
         self.number_of_points = None
+        self.points_indices = None
     
 
     def get_constraint(self):
         self.validate_values()
 
-        services_times = numpy.array([
+        services_times_list = [
             random.randint(
                 self.min_service_time, 
                 self.max_service_time
             ) for i in range(self.number_of_points)
-        ])
+        ]
+
+        services_times = {}
+        for i in range(len(services_times_list)):
+            services_times[self.points_indices[i]] = services_times_list[i]
 
         return {"services_times": services_times}
 
 
     def get_dynamic_setting_elements(self):
         services_attributes_to_problem = {
-            "number_of_points" : "number_of_points"
+            "number_of_points" : "number_of_points",
+            "points_indices" : "points_indices"
         }
         return services_attributes_to_problem
-
 
 
     def validate_values(self):

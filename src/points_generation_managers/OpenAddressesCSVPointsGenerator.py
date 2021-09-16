@@ -1,6 +1,8 @@
 import pandas
 
+from src import exceptions
 from src.points_generation_managers import PointsGeneratorManager
+
 
 
 class OpenAddressesCSVPointsGenerator(PointsGeneratorManager):
@@ -33,12 +35,27 @@ class OpenAddressesCSVPointsGenerator(PointsGeneratorManager):
         return points_list
 
 
+    def select_depots(self, number_of_depots):
+        if (number_of_depots <= 0):
+            self.selected_depots = pandas.DataFrame()
+            return []
+
+        if (len(self.data) <= number_of_depots):
+            raise exceptions.InputWithNotEnoughPoints()
+        
+        self.selected_depots = self.data.sample(n=number_of_depots)
+        self.data.drop(self.selected_depots.index)
+
+        return self.get_points_coordinates(data_sample=self.selected_depots)
+
+
+
     def select_points(self, number_of_points):
 
         if (len(self.data) < number_of_points):
-            self.selected_items = self.data
-        else:
-            self.selected_items = self.data.sample(n=number_of_points)
+            raise exceptions.InputWithNotEnoughPoints()
+        
+        self.selected_items = self.data.sample(n=number_of_points)
 
         return self.get_points_coordinates(data_sample=self.selected_items)
 
@@ -98,4 +115,5 @@ class OpenAddressesCSVPointsGenerator(PointsGeneratorManager):
     def write_selected_items_in_file_type(self, output):
         """Write the data in a CSV file
         """
-        self.selected_items.to_csv(output, index=False)
+        all_points = pandas.concat([self.selected_depots, self.selected_items])
+        all_points.to_csv(output, index=False)

@@ -22,8 +22,10 @@ class PickupAndDelivery(Constraint):
 
         # must be setted dynamically
         self.points = None
+        self.points_indices = None
         self.cvrp_routes = None
         self.distance_matrix = None
+        self.depots = None
 
 
     def get_pairs_by_route(self, has_pd):
@@ -41,6 +43,7 @@ class PickupAndDelivery(Constraint):
 
             while (len(route) > 1):
                 pair = random.sample(route, 2)
+
                 if (not self.allow_repetition):
                     if (has_pd[pair[0]]):
                         route.remove(pair[0])
@@ -55,13 +58,15 @@ class PickupAndDelivery(Constraint):
                 route.remove(pair[1])
 
                 pair = tuple(pair)
-                route_pairs.append(pair)
-
+                pair_indices = [
+                    self.points_indices[pair[0]], 
+                    self.points_indices[pair[1]]
+                ]
+                route_pairs.append(pair_indices)
                 has_pd[pair[0]] = True
                 has_pd[pair[1]] = True
 
             pickup_and_deliveries += route_pairs
-
         return pickup_and_deliveries
 
 
@@ -69,12 +74,15 @@ class PickupAndDelivery(Constraint):
         pickups_and_deliveries = []
         already_chosen = set()
 
-        if (not self.allow_repetition):
-            indices_with_pd = set(
-                [i if has_pd[i] else None for i in range(len(self.points))]
-            )
 
-            indices_with_pd.discard(None)
+        if (not self.allow_repetition):
+            indices_with_pd = set([
+                i 
+                for i in range(len(self.points))
+                if has_pd[i]
+            ])
+
+            # indices_with_pd.discard(None)
             
             already_chosen = already_chosen.union(indices_with_pd)
 
@@ -87,19 +95,23 @@ class PickupAndDelivery(Constraint):
             if (random.randint(1,100) > self.pair_by_radius_per):
                 continue
 
+
             indices = set(
                 numpy.where(
                     self.distance_matrix[i] < self.radius_limiter
                 )[0]
             )
-            
-            indices -= already_chosen
+            indices = indices.intersection(set(
+                [i for i in range(len(self.points_indices))]
+            ))
 
+            indices -= already_chosen
             if (len(indices) < 1):
                 continue
 
             j = random.sample(indices, 1)[0]
             already_chosen.add(j)
+
             while (
                 len(already_chosen) < len(indices)
                 and random.randint(1,100) > self.pair_by_radius_per
@@ -109,16 +121,20 @@ class PickupAndDelivery(Constraint):
             
             if (len(already_chosen) == len(indices)):
                 continue
-
+            
             pair = [i, j]
             random.shuffle(pair)
             pair = tuple(pair)
+            pair_indices = [
+                self.points_indices[pair[0]], 
+                self.points_indices[pair[1]]
+            ]
 
             has_pd[pair[0]] = True
             has_pd[pair[1]] = True
 
-            pickups_and_deliveries.append(pair)
-        
+            pickups_and_deliveries.append(pair_indices)
+
         return pickups_and_deliveries
 
 
@@ -167,8 +183,12 @@ class PickupAndDelivery(Constraint):
             has_pd[i] = True
             has_pd[j] = True
 
-            pickup_and_deliveries.append(pair)
-            
+            pair_indices = [
+                self.points_indices[pair[0]], 
+                self.points_indices[pair[1]]
+            ]
+            pickup_and_deliveries.append(pair_indices)
+
         return pickup_and_deliveries
 
 
@@ -193,13 +213,18 @@ class PickupAndDelivery(Constraint):
         maintained_indices = []
         removed_indices = []
 
-        for i in range(len(self.points)):
-            if (i not in pickups and i not in deliveries):
+        for i in range(len(self.points_indices)):
+            if (
+                self.points_indices[i] not in pickups 
+                and self.points_indices[i] not in deliveries
+            ):
                 removed_indices.append(i)
                 continue
             maintained_indices.append(i)
 
         self.points = [self.points[i] for i in maintained_indices]
+        n_depot = self.points_indices[0]
+        self.points_indices = [i+n_depot for i in range(len(self.points))]
 
         for i in removed_indices:
             for index, pd in enumerate(pickups_and_deliveries):
@@ -246,6 +271,7 @@ class PickupAndDelivery(Constraint):
     def get_dynamic_setting_elements(self):
         pd_attributes_to_problem = {
             "points" : "points",
+            "points_indices" : "points_indices",
             "cvrp_routes" : "cvrp_routes",
             "distance_matrix" : "distance_matrix"
         }

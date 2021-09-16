@@ -20,6 +20,10 @@ def generate_points():
     points_generator_manager.read_file()
     
     execution_log.info_log("Selecting Points...")
+    depots = points_generator_manager.select_depots(
+        problem_class.number_of_depots
+    )
+
     points = points_generator_manager.select_points(
         problem_class.number_of_points
     )
@@ -30,9 +34,16 @@ def generate_points():
         problem_class.output_name
     )
 
+
     execution_log.info_log("Saving Values...")
+    problem_class.set_attribute("depots", depots)
+    problem_class.set_attribute("number_of_depots", len(depots))
     problem_class.set_attribute("points", points)
     problem_class.set_attribute("number_of_points", len(points))
+    problem_class.set_attribute(
+        "points_indices", 
+        [i+len(depots) for i in range(len(points))]
+    )
 
     execution_log.info_log("*Points Extraction Finished.*")
 
@@ -42,8 +53,10 @@ def calculate_distances():
     matrices_calculator = DistancesAndTimesCalculator()
     problem_class = ProblemClass()
 
+    all_points = problem_class.depots + problem_class.points
+
     execution_log.info_log("Updating Dynamic Values...")
-    matrices_calculator.set_attribute("points", problem_class.points)
+    matrices_calculator.set_attribute("points", all_points)
 
     execution_log.info_log("Calculating Distances...")
     distance_matrix, time_matrix = (

@@ -161,6 +161,53 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
         return (None, None)
 
 
+    def request_dist_and_time_from_source_local(self, source_pos, points):
+        distances = []
+        travel_times = []
+        source = points[source_pos]
+        for i, point in enumerate(points):
+            if (i == source_pos):
+                distances.append(0)
+                travel_times.append(0)
+                continue
+
+            distance, travel_time = self.request_dist_and_time_local(
+                source, 
+                point
+            )
+            distances.append(distance)
+            travel_times.append(travel_time)
+        
+        distances = numpy.array(distances)
+        travel_times = numpy.array(travel_times)
+
+        return (distances, travel_times)
+
+
+
+    def request_dist_and_time_from_source_remote(self, source_pos, points):
+        distances = []
+        travel_times = []
+        source = points[source_pos]
+        for i, point in enumerate(points):
+            if (i == source_pos):
+                distances.append(0)
+                travel_times.append(0)
+                continue
+            
+            distance, travel_time = self.request_dist_and_time_remote(
+                source, 
+                point
+            )
+            distances.append(distance)
+            travel_times.append(travel_time)
+        
+        distances = numpy.array(distances)
+        travel_times = numpy.array(travel_times)
+
+        return (distances, travel_times)
+
+
     def request_dist_and_time(self, x, y):
         """Make a /route request to OSRM server and return distance and time between two points. The request will be remote if --run-distances-remote parameter is set, and locally otherwise.
         """
@@ -172,7 +219,8 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
         return self.request_dist_and_time_remote(x, y)
 
 
-    def request_dist_and_time_from_source_local(self, source_position, points):
+
+    def request_time_from_source_local(self, source_position, points):
         """Make a /table request to OSRM local server and return distance and time between from a source to a list of points.
         """
 
@@ -213,21 +261,14 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
             times[i] = times[i] / 60
             times[i] = math.ceil(times[i])
 
-        returned_points = data["destinations"]
-        distances = []
-
-        for point in returned_points:
-            distances.append(point["distance"])
-
-        distances[source_position] = 0
         times[source_position] = 0
 
-        distances = numpy.array(distances)
         times = numpy.array(times)
 
-        return (distances, times)
+        return times
 
-    def request_dist_and_time_from_source_remote(self, source_position, points):
+
+    def request_time_from_source_remote(self, source_position, points):
         """Make a /table request to OSRM remote server and return distance and time between from a source to a list of points.
         """
 
@@ -268,18 +309,12 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
 
         returned_points = data["destinations"]
 
-        distances = []
 
-        for point in returned_points:
-            distances.append(point["distance"])
-
-        distances[source_position] = 0
         times[source_position] = 0
 
-        distances = numpy.array(distances)
         times = numpy.array(times)
 
-        return (distances, times)
+        return times
 
     def calculate_dist_and_time_from_source(self, source_position, points):
         """Make a /table request to OSRM server and return distance and time between from a source to a list of points. The request will be remote if --run-distances-remote parameter is set, and locally otherwise.
@@ -292,8 +327,10 @@ class DistancesAndTimesOSRM(DistancesAndTimesCalculator):
                 points
             )
 
-        return self.request_dist_and_time_from_source_remote(
+        return self.request_time_from_source_remote(
             source_position, 
             points
         )
+
+        
 

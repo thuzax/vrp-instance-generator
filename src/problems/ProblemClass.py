@@ -20,7 +20,9 @@ class ProblemClass(metaclass=ABCMeta):
     output_type = "json"
     
     # Acquired while running
+    depots = None
     points = None
+    points_indices = None
     distance_matrix = None
     time_matrix = None
 
