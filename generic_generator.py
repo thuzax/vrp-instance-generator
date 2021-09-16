@@ -153,6 +153,7 @@ if __name__ == "__main__":
     numpy.random.seed(arguments["seed"])
 
     exception = None
+    start_time = time.time()
 
     try:
         execution_log.info_log("Starting Generation...")
@@ -180,6 +181,11 @@ if __name__ == "__main__":
             execution_log.info_log("*Running Data Written.*")
         
         DistancesAndTimesCalculator().__del__()
+        execution_log.info_log(
+            "*Execution time: " 
+            + str(time.time() - start_time)
+            + " seconds*"
+        )
         execution_log.info_log("*Ending Program.*")
         if (exception is not None):
             raise exception

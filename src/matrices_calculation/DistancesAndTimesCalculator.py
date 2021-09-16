@@ -1,6 +1,8 @@
+import numpy
+
+from progress.bar import Bar
 from abc import ABC, ABCMeta, abstractmethod
 
-import numpy
 
 from src import exceptions
 
@@ -53,7 +55,12 @@ class DistancesAndTimesCalculator(metaclass=ABCMeta):
 
         distance_matrix = []
         time_matrix = []
-
+        
+        bar = Bar(
+            'Calculating Matrices', 
+            max=len(self.points), 
+            suffix='%(percent)d%%'
+        )
         for i in range(len(self.points)):
             results = self.calculate_dist_and_time_from_source(
                                                 i, 
@@ -65,10 +72,10 @@ class DistancesAndTimesCalculator(metaclass=ABCMeta):
                 raise exceptions.DistanceToPointCannotBeCalculated(
                     self.points[i]
                 )
+            bar.next()
 
             distance_matrix.append(distances)
             time_matrix.append(times)
-
         distance_matrix = numpy.array(distance_matrix)
         distance_matrix = numpy.around(distance_matrix)
 
@@ -82,6 +89,7 @@ class DistancesAndTimesCalculator(metaclass=ABCMeta):
                     distance_matrix[i][j] = 1
                 if (time_matrix[i][j] < 1):
                     time_matrix[i][j] = 1
+        bar.finish
         
         return (distance_matrix, time_matrix)
 

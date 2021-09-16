@@ -10,11 +10,11 @@
             }
         },
         "problem_class" : {
-            "PDPTWURA" : {
-                "number_of_points" : 20,
-                "number_of_depots" : 10,
+            "PDPTW" : {
+                "number_of_points" : 10,
+                "number_of_depots" : 1,
                 "output_path" : "./test_instances/results/",
-                "output_name" : "br-mg-bh-200",
+                "output_name" : "br-mg-bh-10",
                 "output_type" : "json"
             }
         },
