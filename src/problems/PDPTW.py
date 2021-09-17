@@ -300,17 +300,36 @@ class PDPTW(ProblemClass):
         output_dict["pickups_and_deliveries"] = [
             [int(x), int(y)] for x, y in output_dict["pickups_and_deliveries"]
         ]
-
+        
+        
         output_dict["demands"] = {}
-        for i in self.points_indices:
-            output_dict["demands"][i+initial_value] = (
-                self.demands[i]
+        for i in range(len(self.pickups_and_deliveries)):
+            pick_pos = i + len(self.depots) + initial_value
+            pick = self.pickups_and_deliveries[i][0]
+            deli_pos = pick_pos + len(self.pickups_and_deliveries)
+            deli = self.pickups_and_deliveries[i][1]
+            
+            output_dict["demands"][pick_pos] = (
+                self.demands[pick]
+            )
+
+            output_dict["demands"][deli_pos] = (
+                -self.demands[deli]
             )
 
         output_dict["services_times"] = {}
-        for i in self.points_indices:
-            output_dict["services_times"][i+initial_value] = (
-                self.services_times[i]
+        for i in range(len(self.pickups_and_deliveries)):
+            pick_pos = i + len(self.depots) + initial_value
+            pick = self.pickups_and_deliveries[i][0]
+            deli_pos = pick_pos + len(self.pickups_and_deliveries)
+            deli = self.pickups_and_deliveries[i][1]
+            
+            output_dict["services_times"][pick_pos] = (
+                self.services_times[pick]
+            )
+
+            output_dict["services_times"][deli_pos] = (
+                self.services_times[deli]
             )
 
         time_windows_dict = {}

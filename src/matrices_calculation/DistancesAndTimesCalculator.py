@@ -61,6 +61,7 @@ class DistancesAndTimesCalculator(metaclass=ABCMeta):
             max=len(self.points), 
             suffix='%(percent)d%%'
         )
+        print()
         for i in range(len(self.points)):
             results = self.calculate_dist_and_time_from_source(
                                                 i, 
@@ -90,6 +91,7 @@ class DistancesAndTimesCalculator(metaclass=ABCMeta):
                 if (time_matrix[i][j] < 1):
                     time_matrix[i][j] = 1
         bar.finish
+        print()
         
         return (distance_matrix, time_matrix)
 
